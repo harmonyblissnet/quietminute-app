@@ -43,13 +43,20 @@ export default async function handler(req: any, res: any) {
       }),
     });
 
-    // MailerLite returns 200/201 for create/update; treat anything else as a failure.
+    // MailerLite returns 200/201 for create/update; anything else is a failure.
+    // Surface *why* (status + a short reason) so misconfiguration is diagnosable.
     if (r.status !== 200 && r.status !== 201) {
-      res.status(502).json({ error: "Could not join the list." });
+      const detail = await r.text().catch(() => "");
+      console.error("MailerLite rejected:", r.status, detail.slice(0, 300));
+      let message = "Couldn't reach the mailing list. Please try again.";
+      if (r.status === 401 || r.status === 403) message = "The mailing list rejected the API key.";
+      else if (r.status === 422) message = "The mailing list rejected the request — check the group id.";
+      res.status(502).json({ error: message, code: r.status });
       return;
     }
     res.status(200).json({ ok: true });
-  } catch {
-    res.status(502).json({ error: "Could not join the list." });
+  } catch (err) {
+    console.error("waitlist function error:", err);
+    res.status(502).json({ error: "Couldn't reach the mailing list.", code: "network" });
   }
 }

@@ -8,10 +8,16 @@ A gentle React mindfulness app. The user picks a "mode" on the home screen and
 is guided through a short flow that ends in a moment called *The Return*.
 
 It is evolving into a **freemium** product: the core practice stays free and
-open to everyone with **no account**, while an optional **members area** (daily
-exercises, audio, texts) sits behind sign-in. Accounts use **Supabase**
-(Phase 1, done). Paid subscriptions via **Stripe** are planned (Phase 2, not
-built yet).
+open to everyone with **no account**, while an optional **members area** sits
+behind sign-in. Accounts use **Supabase** (Phase 1, done). The paid layer —
+**The Daily Practice**, a one-time unlock — is Phase 2: the full experience is
+built (`src/practice/`), and the **Lemon Squeezy** payment + entitlement wiring
+is the remaining piece (Lemon Squeezy is a Merchant of Record, so it handles
+global VAT). A monthly subscription can later reuse the same entitlement.
+
+Before launch, the entry point shows a **waitlist popup** (`WaitlistModal` →
+MailerLite via `api/waitlist.ts`); set `VITE_DAILY_PRACTICE_LAUNCHED=true` to
+reveal the real members flow.
 
 ## Commands
 
@@ -64,9 +70,17 @@ Other modules (added as the app grows beyond a single file):
 - **`src/auth/AuthScreen.tsx`** — the sign-in / create-account UI (magic link
   **and** email + password), styled with co-located CSS that reuses global
   classes like `.btn-primary`.
-- **`src/premium/PremiumArea.tsx`** — the gated members space: shows
-  `AuthScreen` when signed out, a placeholder daily-practice view when signed
-  in. New paid content goes here.
+- **`src/practice/`** — **The Daily Practice**, the paid members layer.
+  `DailyPracticeRoot` gates it (signed out → `AuthScreen`; no entitlement →
+  `WhatsInside` offer; entitled → the practice). `useDailyAccess` reads the
+  account's entitlement from Supabase — access is granted only server-side by
+  the Lemon Squeezy webhook, never the client. Screens: `Dashboard` (day-rotating
+  reflection prompt + cards + one-time upsell), `BreathingSession` (pattern/
+  sound/duration → animated circle + Web Audio tones), `TheRelease`
+  (hold-to-release), `SilentCalendar`. `data.ts` holds the copy/patterns;
+  `practiceStorage.ts` keeps the local calendar marks (non-sensitive UX state).
+- **`supabase/entitlements.sql`** — the `entitlements` table + RLS to run once
+  in Supabase. **`public/audio/`** — drop-in ambient MP3s (optional).
 
 `src/main.tsx` mounts `<App />`; `src/index.css` is a minimal reset.
 

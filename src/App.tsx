@@ -1,19 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-
-const palette = {
-  bg: "#EDE6DC",
-  bgCard: "#F4EFE7",
-  textDark: "#2A1C10",
-  textMid: "#5A3E28",
-  textLight: "#9A7E66",
-  accent: "#B8860B",
-  accentHover: "#9A6F08",
-  accentLight: "#D4A843",
-  accentSoft: "#E8C87A",
-  accentGlow: "#C89A2088",
-  border: "#D4C4B0",
-  cardBorder: "#C8B49A",
-};
+import { palette } from "./theme";
+import { AuthProvider, useAuth } from "./auth/AuthContext";
+import { PremiumArea } from "./premium/PremiumArea";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
@@ -117,6 +105,16 @@ const css = `
     transition: color 0.2s;
   }
   .site-footer a:hover { color: ${palette.accent}; }
+
+  /* members / premium */
+  .enter-premium { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 8px; }
+  .enter-premium-link { background: none; border: none; font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 400; color: ${palette.accent}; cursor: pointer; letter-spacing: 0.01em; padding: 4px; transition: color 0.2s; }
+  .enter-premium-link:hover { color: ${palette.accentHover}; }
+  .enter-premium-note { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; letter-spacing: 0.02em; }
+  .account-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; font-size: 12px; color: ${palette.textLight}; background: ${palette.bgCard}; border: 1px solid ${palette.border}; border-radius: 12px; padding: 10px 14px; }
+  .account-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-link { background: none; border: none; color: ${palette.accent}; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 12px; letter-spacing: 0.04em; text-decoration: underline; text-underline-offset: 3px; padding: 0; white-space: nowrap; }
+  .btn-link:hover { color: ${palette.accentHover}; }
 
   @media (max-width: 480px) {
     .page { padding: 48px 20px 64px; }
@@ -322,7 +320,8 @@ const modes = [
   { id: "just-breathe", icon: "◌", label: "Just breathe", subtitle: "One quiet minute, nothing more" },
 ];
 
-function QuietMinuteTool() {
+function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
+  const { configured } = useAuth();
   const [selected, setSelected] = useState<string | null>(null);
   const goHome = () => setSelected(null);
   return (
@@ -345,6 +344,17 @@ function QuietMinuteTool() {
               </button>
             ))}
           </div>
+          {configured && (
+            <div className="enter-premium">
+              <div className="gold-line" />
+              <button className="enter-premium-link" onClick={onEnterPremium}>
+                enter the daily practice ✦
+              </button>
+              <span className="enter-premium-note">
+                members only — the rest of The Quiet Minute is always free
+              </span>
+            </div>
+          )}
         </div>
       )}
       {selected === "no-space" && <NoSpaceFlow onBack={goHome} />}
@@ -356,8 +366,9 @@ function QuietMinuteTool() {
 }
 
 export default function App() {
+  const [view, setView] = useState<"home" | "premium">("home");
   return (
-    <>
+    <AuthProvider>
       <style>{css}</style>
       <div className="page">
         <header className="page-header">
@@ -366,11 +377,15 @@ export default function App() {
           <p className="page-sub">One quiet minute. That's all this is.</p>
           <div className="page-divider" />
         </header>
-        <QuietMinuteTool />
+        {view === "home" ? (
+          <QuietMinuteTool onEnterPremium={() => setView("premium")} />
+        ) : (
+          <PremiumArea onBack={() => setView("home")} />
+        )}
         <footer className="site-footer">
           A practice by <a href="https://naomietnel.com">Naomi Etnel</a>
         </footer>
       </div>
-    </>
+    </AuthProvider>
   );
 }

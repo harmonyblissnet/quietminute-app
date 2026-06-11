@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { DailyPracticeRoot } from "./practice/DailyPracticeRoot";
 import { WaitlistModal } from "./practice/WaitlistModal";
 import { dailyPracticeLaunched } from "./practice/config";
+import { PrivacyStatement } from "./PrivacyStatement";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
@@ -173,6 +174,19 @@ const css = `
   .modal-input::placeholder { color: ${palette.accentSoft}; }
   .modal-error { font-size: 12.5px; color: #9A3B2F; font-family: 'Cormorant Garamond', serif; font-style: italic; }
   .modal-foot { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+
+  /* Footer links + legal page */
+  .footer-links { display: block; margin-top: 10px; }
+  .footer-links a { margin: 0 2px; }
+  .legal { width: 100%; max-width: 620px; text-align: left; animation: fadeIn 0.5s ease; }
+  .legal h1 { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: ${palette.textDark}; line-height: 1.3; margin-top: 8px; }
+  .legal h2 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: ${palette.textDark}; margin: 26px 0 6px; }
+  .legal p { font-size: 14px; font-weight: 300; color: ${palette.textMid}; line-height: 1.85; margin-bottom: 10px; }
+  .legal strong { font-weight: 500; color: ${palette.textDark}; }
+  .legal a { color: ${palette.accent}; text-decoration: underline; text-underline-offset: 3px; }
+  .legal a:hover { color: ${palette.accentHover}; }
+  .legal p.legal-meta { font-size: 12px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; margin-bottom: 16px; }
+  .legal-rule { height: 1px; background: linear-gradient(90deg, transparent, ${palette.accentLight}, transparent); margin: 44px 0 8px; }
 
   @media (max-width: 480px) {
     .page { padding: 48px 20px 64px; }
@@ -426,6 +440,15 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
 export default function App() {
   const [view, setView] = useState<"home" | "premium">("home");
   const [showWaitlist, setShowWaitlist] = useState(false);
+  const [hash, setHash] = useState(window.location.hash);
+
+  // A tiny hash route so the privacy page has a shareable URL (/#privacy).
+  useEffect(() => {
+    const onHash = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+  const showPrivacy = hash === "#privacy";
 
   // Before launch, the entry point opens the waitlist popup; once
   // VITE_DAILY_PRACTICE_LAUNCHED is "true", it opens the real members area.
@@ -444,13 +467,20 @@ export default function App() {
           <p className="page-sub">One quiet minute. That's all this is.</p>
           <div className="page-divider" />
         </header>
-        {view === "home" ? (
+        {showPrivacy ? (
+          <PrivacyStatement onBack={() => { window.location.hash = ""; }} />
+        ) : view === "home" ? (
           <QuietMinuteTool onEnterPremium={enterPremium} />
         ) : (
           <DailyPracticeRoot onExit={() => setView("home")} />
         )}
         <footer className="site-footer">
           A practice by <a href="https://naomietnel.com">Naomi Etnel</a>
+          <span className="footer-links">
+            <a href="#privacy">privacy</a>
+            <span aria-hidden="true"> · </span>
+            <a href="mailto:hello@naomietnel.com">contact</a>
+          </span>
         </footer>
       </div>
       {showWaitlist && <WaitlistModal onClose={() => setShowWaitlist(false)} />}

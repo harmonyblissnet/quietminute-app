@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { palette } from "./theme";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
-import { PremiumArea } from "./premium/PremiumArea";
+import { DailyPracticeRoot } from "./practice/DailyPracticeRoot";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
@@ -115,6 +115,41 @@ const css = `
   .account-bar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .btn-link { background: none; border: none; color: ${palette.accent}; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 12px; letter-spacing: 0.04em; text-decoration: underline; text-underline-offset: 3px; padding: 0; white-space: nowrap; }
   .btn-link:hover { color: ${palette.accentHover}; }
+
+  /* The Daily Practice */
+  .practice { display: flex; flex-direction: column; align-items: center; gap: 22px; width: 100%; max-width: 380px; animation: fadeIn 0.5s ease; }
+  .practice-back { align-self: flex-start; margin-bottom: 4px; }
+  .practice-mark { font-size: 22px; color: ${palette.accent}; filter: drop-shadow(0 2px 8px ${palette.accentGlow}); }
+  .practice-eyebrow { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: ${palette.accent}; font-weight: 400; text-align: center; }
+  .practice-rule { width: 48px; height: 1px; background: linear-gradient(90deg, transparent, ${palette.accentLight}, transparent); }
+
+  .wi-intro { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 300; line-height: 1.6; color: ${palette.textDark}; text-align: center; }
+  .wi-body { font-size: 14px; font-weight: 300; color: ${palette.textMid}; line-height: 1.8; text-align: center; }
+  .wi-list { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+  .wi-item { display: flex; gap: 12px; align-items: flex-start; text-align: left; }
+  .wi-ic { color: ${palette.accent}; font-size: 14px; line-height: 1.7; }
+  .wi-item-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: ${palette.textDark}; font-weight: 400; margin-bottom: 2px; }
+  .wi-item-sub { font-size: 12.5px; color: ${palette.textLight}; font-weight: 300; line-height: 1.6; }
+  .wi-forever { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 17px; color: ${palette.textMid}; text-align: center; }
+  .wi-price { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: ${palette.textDark}; font-weight: 400; }
+  .wi-free { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+  .wi-note { font-size: 13px; color: ${palette.textMid}; font-family: 'Cormorant Garamond', serif; font-style: italic; text-align: center; }
+
+  .dash-prompt { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 22px; line-height: 1.5; color: ${palette.textDark}; text-align: center; padding: 4px; }
+  .dash-cards { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .dash-upsell { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; border-top: 1px solid ${palette.border}; padding-top: 20px; margin-top: 4px; width: 100%; }
+  .dash-upsell p { font-size: 13px; color: ${palette.textMid}; font-style: italic; font-family: 'Cormorant Garamond', serif; line-height: 1.6; }
+  .dash-upsell-row { display: flex; gap: 18px; align-items: center; }
+  .dash-upsell-close { background: none; border: none; color: ${palette.textLight}; cursor: pointer; font-size: 11px; font-family: 'Jost', sans-serif; letter-spacing: 0.04em; }
+  .dash-upsell-close:hover { color: ${palette.textMid}; }
+
+  .cal { gap: 16px; }
+  .cal-month { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: ${palette.textDark}; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; width: 100%; max-width: 300px; }
+  .cal-dow { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: ${palette.textLight}; text-align: center; padding-bottom: 4px; }
+  .cal-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; color: ${palette.textLight}; font-family: 'Jost', sans-serif; border-radius: 50%; }
+  .cal-cell.is-marked { color: ${palette.accent}; background: radial-gradient(circle, ${palette.accentSoft}66, transparent 70%); border: 1px solid ${palette.accentLight}; }
+  .cal-cell.is-today { font-weight: 500; color: ${palette.textDark}; }
 
   @media (max-width: 480px) {
     .page { padding: 48px 20px 64px; }
@@ -380,7 +415,7 @@ export default function App() {
         {view === "home" ? (
           <QuietMinuteTool onEnterPremium={() => setView("premium")} />
         ) : (
-          <PremiumArea onBack={() => setView("home")} />
+          <DailyPracticeRoot onExit={() => setView("home")} />
         )}
         <footer className="site-footer">
           A practice by <a href="https://naomietnel.com">Naomi Etnel</a>

@@ -55,7 +55,8 @@ export function DailyPracticeRoot({ onExit }: { onExit: () => void }) {
 
   const back = () => setScreen("dashboard");
   if (screen === "breathing") return <BreathingSession onBack={back} />;
-  if (screen === "release") return <TheRelease onBack={back} />;
+  if (screen === "release")
+    return <TheRelease onBack={back} onToBreathing={() => setScreen("breathing")} />;
   if (screen === "calendar") return <SilentCalendar onBack={back} />;
   return <Dashboard onOpen={(s) => setScreen(s)} onExit={onExit} />;
 }

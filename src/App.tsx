@@ -151,6 +151,12 @@ const css = `
   .cal-cell.is-marked { color: ${palette.accent}; background: radial-gradient(circle, ${palette.accentSoft}66, transparent 70%); border: 1px solid ${palette.accentLight}; }
   .cal-cell.is-today { font-weight: 500; color: ${palette.textDark}; }
 
+  .release-text { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 300; color: ${palette.textMid}; line-height: 1.7; text-align: center; white-space: pre-wrap; max-height: 168px; overflow-y: auto; width: 100%; opacity: 1; transition: opacity 0.25s ease; }
+  .release-text.is-fading { opacity: 0; transition: opacity 2s ease; }
+  .release-question { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: ${palette.textDark}; text-align: center; line-height: 1.5; }
+  .release-hint { font-size: 12px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; text-align: center; }
+  .release-hold { touch-action: none; user-select: none; -webkit-user-select: none; }
+
   @media (max-width: 480px) {
     .page { padding: 48px 20px 64px; }
   }

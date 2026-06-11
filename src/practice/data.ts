@@ -85,7 +85,7 @@ export const prompts: string[] = [
   "What would change if you trusted yourself completely — just for today?",
   "Where are you living on other people's terms without realizing it?",
   "What have you been postponing that has nothing to do with time?",
-  "What would she say — the woman you're becoming — if she could speak to you right now?",
+  "What would they say — the person you're becoming — if they could speak to you right now?",
   "Which part of you is still waiting to be seen?",
   "What are you allowing that you no longer agree with?",
   "What would you protect in yourself if you loved yourself the way you love others?",

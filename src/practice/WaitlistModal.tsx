@@ -8,6 +8,7 @@ type Status = "idle" | "busy" | "done" | "error";
 export function WaitlistModal({ onClose }: { onClose: () => void }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Close on Escape.
   useEffect(() => {
@@ -22,15 +23,25 @@ export function WaitlistModal({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     if (status === "busy") return;
     setStatus("busy");
+    setErrorMsg(null);
     try {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim() }),
       });
-      if (!res.ok) throw new Error();
-      setStatus("done");
+      if (res.ok) {
+        setStatus("done");
+        return;
+      }
+      const data = (await res.json().catch(() => null)) as
+        | { error?: string; code?: number | string }
+        | null;
+      const code = data?.code ? ` (${data.code})` : "";
+      setErrorMsg((data?.error ?? "something didn't go through.") + code);
+      setStatus("error");
     } catch {
+      setErrorMsg("something didn't go through. please try again in a moment.");
       setStatus("error");
     }
   }
@@ -75,8 +86,8 @@ export function WaitlistModal({ onClose }: { onClose: () => void }) {
                 {status === "busy" ? "one moment…" : "notify me →"}
               </button>
             </form>
-            {status === "error" && (
-              <p className="modal-error">something didn't go through. please try again in a moment.</p>
+            {status === "error" && errorMsg && (
+              <p className="modal-error">{errorMsg}</p>
             )}
             <p className="modal-foot">The rest of The Quiet Minute is always free.</p>
           </>

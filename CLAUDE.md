@@ -11,8 +11,13 @@ It is evolving into a **freemium** product: the core practice stays free and
 open to everyone with **no account**, while an optional **members area** sits
 behind sign-in. Accounts use **Supabase** (Phase 1, done). The paid layer —
 **The Daily Practice**, a one-time unlock — is Phase 2: the full experience is
-built (`src/practice/`), and the **Stripe** payment + entitlement wiring is the
-remaining piece. A monthly subscription can later reuse the same entitlement.
+built (`src/practice/`), and the **Lemon Squeezy** payment + entitlement wiring
+is the remaining piece (Lemon Squeezy is a Merchant of Record, so it handles
+global VAT). A monthly subscription can later reuse the same entitlement.
+
+Before launch, the entry point shows a **waitlist popup** (`WaitlistModal` →
+MailerLite via `api/waitlist.ts`); set `VITE_DAILY_PRACTICE_LAUNCHED=true` to
+reveal the real members flow.
 
 ## Commands
 
@@ -69,7 +74,7 @@ Other modules (added as the app grows beyond a single file):
   `DailyPracticeRoot` gates it (signed out → `AuthScreen`; no entitlement →
   `WhatsInside` offer; entitled → the practice). `useDailyAccess` reads the
   account's entitlement from Supabase — access is granted only server-side by
-  the Stripe webhook, never the client. Screens: `Dashboard` (day-rotating
+  the Lemon Squeezy webhook, never the client. Screens: `Dashboard` (day-rotating
   reflection prompt + cards + one-time upsell), `BreathingSession` (pattern/
   sound/duration → animated circle + Web Audio tones), `TheRelease`
   (hold-to-release), `SilentCalendar`. `data.ts` holds the copy/patterns;

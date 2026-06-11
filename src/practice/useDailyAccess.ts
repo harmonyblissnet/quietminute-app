@@ -4,8 +4,8 @@ import { useAuth } from "../auth/AuthContext";
 
 // Account-based entitlement check. Reads the signed-in user's row from the
 // `entitlements` table (Row Level Security lets them see only their own).
-// Access is granted server-side by the Stripe webhook — never from the client —
-// so it can't be faked, and it follows the account across devices.
+// Access is granted server-side by the Lemon Squeezy webhook — never from the
+// client — so it can't be faked, and it follows the account across devices.
 export function useDailyAccess() {
   const { user, loading: authLoading } = useAuth();
   const [hasAccess, setHasAccess] = useState(false);

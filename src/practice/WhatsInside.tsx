@@ -20,8 +20,8 @@ const items = [
   },
 ];
 
-// `onUnlock` is wired to Stripe Checkout in Phase 2. Until then the button shows
-// a gentle note so the page is complete and reviewable.
+// `onUnlock` is wired to Lemon Squeezy checkout in Phase 2. Until then the button
+// shows a gentle note so the page is complete and reviewable.
 export function WhatsInside({ onBack, onUnlock }: { onBack: () => void; onUnlock?: () => void }) {
   const [notice, setNotice] = useState<string | null>(null);
 

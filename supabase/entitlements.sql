@@ -3,8 +3,8 @@
 -- Run this once in your Supabase project:
 --   Dashboard → SQL Editor → New query → paste this → Run.
 --
--- It creates one row per paying account. The Stripe webhook (Phase 2, using the
--- service-role key) is the ONLY thing that writes here, so access can't be
+-- It creates one row per paying account. The Lemon Squeezy webhook (Phase 2,
+-- using the service-role key) is the ONLY thing that writes here, so access can't be
 -- faked from the browser. The schema is deliberately subscription-ready: a
 -- future monthly/yearly plan reuses the same row.
 

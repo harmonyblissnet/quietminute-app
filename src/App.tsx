@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { palette } from "./theme";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { DailyPracticeRoot } from "./practice/DailyPracticeRoot";
+import { WaitlistModal } from "./practice/WaitlistModal";
+import { dailyPracticeLaunched } from "./practice/config";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
@@ -156,6 +158,21 @@ const css = `
   .release-question { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: ${palette.textDark}; text-align: center; line-height: 1.5; }
   .release-hint { font-size: 12px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; text-align: center; }
   .release-hold { touch-action: none; user-select: none; -webkit-user-select: none; }
+
+  /* Pre-launch waitlist modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(42, 28, 16, 0.4); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 50; animation: fadeIn 0.3s ease; }
+  .modal { position: relative; background: ${palette.bgCard}; border-radius: 22px; box-shadow: 0 24px 70px rgba(42, 28, 16, 0.28); padding: 40px 26px 30px; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; animation: fadeIn 0.4s ease; }
+  .modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 22px; line-height: 1; color: ${palette.textLight}; cursor: pointer; transition: color 0.2s; }
+  .modal-close:hover { color: ${palette.textMid}; }
+  .modal-mark { font-size: 22px; color: ${palette.accent}; filter: drop-shadow(0 2px 8px ${palette.accentGlow}); }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 27px; font-weight: 300; color: ${palette.textDark}; line-height: 1.3; }
+  .modal-body { font-size: 14px; font-weight: 300; color: ${palette.textMid}; line-height: 1.8; }
+  .modal-form { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 4px; }
+  .modal-input { width: 100%; background: #fff; border: 1px solid ${palette.border}; border-radius: 14px; color: ${palette.textDark}; font-size: 15px; font-family: 'Jost', sans-serif; font-weight: 300; padding: 14px 16px; outline: none; transition: border-color 0.25s, box-shadow 0.25s; }
+  .modal-input:focus { border-color: ${palette.accentLight}; box-shadow: 0 0 0 3px ${palette.accentSoft}44; }
+  .modal-input::placeholder { color: ${palette.accentSoft}; }
+  .modal-error { font-size: 12.5px; color: #9A3B2F; font-family: 'Cormorant Garamond', serif; font-style: italic; }
+  .modal-foot { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; }
 
   @media (max-width: 480px) {
     .page { padding: 48px 20px 64px; }
@@ -385,7 +402,7 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
               </button>
             ))}
           </div>
-          {configured && (
+          {(configured || !dailyPracticeLaunched) && (
             <div className="enter-premium">
               <div className="gold-line" />
               <button className="enter-premium-link" onClick={onEnterPremium}>
@@ -408,6 +425,15 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
 
 export default function App() {
   const [view, setView] = useState<"home" | "premium">("home");
+  const [showWaitlist, setShowWaitlist] = useState(false);
+
+  // Before launch, the entry point opens the waitlist popup; once
+  // VITE_DAILY_PRACTICE_LAUNCHED is "true", it opens the real members area.
+  const enterPremium = () => {
+    if (dailyPracticeLaunched) setView("premium");
+    else setShowWaitlist(true);
+  };
+
   return (
     <AuthProvider>
       <style>{css}</style>
@@ -419,7 +445,7 @@ export default function App() {
           <div className="page-divider" />
         </header>
         {view === "home" ? (
-          <QuietMinuteTool onEnterPremium={() => setView("premium")} />
+          <QuietMinuteTool onEnterPremium={enterPremium} />
         ) : (
           <DailyPracticeRoot onExit={() => setView("home")} />
         )}
@@ -427,6 +453,7 @@ export default function App() {
           A practice by <a href="https://naomietnel.com">Naomi Etnel</a>
         </footer>
       </div>
+      {showWaitlist && <WaitlistModal onClose={() => setShowWaitlist(false)} />}
     </AuthProvider>
   );
 }

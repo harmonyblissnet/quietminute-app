@@ -200,6 +200,7 @@ const css = `
 `;
 
 function BreathingCircle({ onComplete }: { onComplete: () => void }) {
+  const { t } = useT();
   const [phase, setPhase] = useState("inhale");
   const [count, setCount] = useState(4);
   const phaseRef = useRef("inhale");
@@ -228,7 +229,7 @@ function BreathingCircle({ onComplete }: { onComplete: () => void }) {
 
   const size = phase === "inhale" ? 134 : phase === "hold" ? 112 : 72;
   const glow = phase === "inhale" ? `0 0 48px ${palette.accentGlow}` : phase === "hold" ? `0 0 28px ${palette.accentGlow}` : `0 0 8px ${palette.accentGlow}`;
-  const label = phase === "inhale" ? "Breathe in" : phase === "hold" ? "Hold" : "Breathe out";
+  const label = phase === "inhale" ? t("breath.in") : phase === "hold" ? t("breath.hold") : t("breath.out");
 
   return (
     <div className="breath-wrap">
@@ -245,53 +246,55 @@ function BreathingCircle({ onComplete }: { onComplete: () => void }) {
 }
 
 function FinalActions({ onHome }: { onHome: () => void }) {
+  const { t } = useT();
   return (
     <div className="final-actions">
-      <a href="https://naomietnel.com" className="btn-deeper">Learn more about The Return</a>
-      <button className="btn-back" onClick={onHome}>← back home</button>
+      <a href="https://naomietnel.com" className="btn-deeper">{t("final.learnMore")}</a>
+      <button className="btn-back" onClick={onHome}>{t("final.backHome")}</button>
     </div>
   );
 }
 
 function NoSpaceFlow({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   const actions = [
-    { icon: "☕", text: "Make something for yourself" },
-    { icon: "🌬️", text: "Breathe a little longer" },
-    { icon: "🚪", text: "Step outside" },
-    { icon: "✦", text: "Your own choice" },
+    { icon: "☕", k: "ns.action.coffee" },
+    { icon: "🌬️", k: "ns.action.breathe" },
+    { icon: "🚪", k: "ns.action.outside" },
+    { icon: "✦", k: "ns.action.own" },
   ];
   return (
     <div className="flow">
       {step === 0 && (<>
-        <p className="flow-eyebrow">This moment is yours</p>
-        <h2 className="flow-title">This minute is yours.<br />Not because you earned it —<br />you just needed it.</h2>
-        <p className="flow-body">And that's enough. No explaining, no justifying.<br />You deserve to be here.</p>
-        <button className="btn-primary" onClick={() => setStep(1)}>I'm ready</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <p className="flow-eyebrow">{t("ns.0.eyebrow")}</p>
+        <h2 className="flow-title"><T k="ns.0.title" /></h2>
+        <p className="flow-body"><T k="ns.0.body" /></p>
+        <button className="btn-primary" onClick={() => setStep(1)}>{t("ns.0.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 1 && (<>
-        <p className="flow-eyebrow">Let's breathe first</p>
-        <p className="flow-body">Just one minute.<br />Nothing else is required of you right now.</p>
+        <p className="flow-eyebrow">{t("ns.1.eyebrow")}</p>
+        <p className="flow-body"><T k="ns.1.body" /></p>
         <BreathingCircle onComplete={() => setStep(2)} />
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 2 && (<>
-        <p className="flow-eyebrow">Now, something small for you</p>
-        <p className="flow-body">You've taken a breath. Now do one small thing — just for you.<br />It doesn't have to be big. It just has to be yours.</p>
+        <p className="flow-eyebrow">{t("ns.2.eyebrow")}</p>
+        <p className="flow-body"><T k="ns.2.body" /></p>
         <div className="action-grid">
           {actions.map((a) => (
-            <button key={a.text} className="action-card" onClick={() => setStep(3)}>
-              <span className="action-emoji">{a.icon}</span>{a.text}
+            <button key={a.k} className="action-card" onClick={() => setStep(3)}>
+              <span className="action-emoji">{a.icon}</span>{t(a.k)}
             </button>
           ))}
         </div>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 3 && (<>
         <span className="final-icon">✦</span>
-        <h2 className="final-title">Be present for it.</h2>
-        <p className="final-sub">That's The Return.</p>
+        <h2 className="final-title">{t("ns.3.title")}</h2>
+        <p className="final-sub">{t("ns.3.sub")}</p>
         <FinalActions onHome={onBack} />
       </>)}
     </div>
@@ -299,36 +302,37 @@ function NoSpaceFlow({ onBack }: { onBack: () => void }) {
 }
 
 function HeadFullFlow({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   const [text, setText] = useState("");
   return (
     <div className="flow">
       {step === 0 && (<>
-        <p className="flow-eyebrow">Nothing more is required of you</p>
-        <h2 className="flow-title">Your mind is racing.<br />That's okay.</h2>
-        <p className="flow-body">You don't need to figure anything out right now.<br />Nothing is required of you in this moment.<br />Just let it out.</p>
-        <button className="btn-primary" onClick={() => setStep(1)}>Let me write it out</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <p className="flow-eyebrow">{t("hf.0.eyebrow")}</p>
+        <h2 className="flow-title"><T k="hf.0.title" /></h2>
+        <p className="flow-body"><T k="hf.0.body" /></p>
+        <button className="btn-primary" onClick={() => setStep(1)}>{t("hf.0.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 1 && (<>
         <p className="flow-body" style={{ fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
-          Leave it here. Whatever is sitting too heavy — write it out. All of it.
+          {t("hf.1.prompt")}
         </p>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Just type. No one is reading this." />
-        <p className="privacy-note">What you write here is never saved or stored.<br />It disappears when you let go.</p>
-        <button className="btn-primary" onClick={() => setStep(2)} disabled={!text.trim()}>Let it go</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={t("hf.1.placeholder")} />
+        <p className="privacy-note"><T k="hf.1.privacy" /></p>
+        <button className="btn-primary" onClick={() => setStep(2)} disabled={!text.trim()}>{t("hf.1.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 2 && (<>
-        <p className="flow-eyebrow">Now breathe it out</p>
-        <p className="flow-body">You put it down.<br />Let your body follow.</p>
+        <p className="flow-eyebrow">{t("hf.2.eyebrow")}</p>
+        <p className="flow-body"><T k="hf.2.body" /></p>
         <BreathingCircle onComplete={() => setStep(3)} />
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 3 && (<>
         <span className="final-icon">◈</span>
-        <h2 className="final-title">You let it out<br />for a minute.</h2>
-        <p className="final-sub">That counts.</p>
+        <h2 className="final-title"><T k="hf.3.title" /></h2>
+        <p className="final-sub">{t("hf.3.sub")}</p>
         <FinalActions onHome={onBack} />
       </>)}
     </div>
@@ -336,37 +340,38 @@ function HeadFullFlow({ onBack }: { onBack: () => void }) {
 }
 
 function EndOfDayFlow({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   const [gratitude, setGratitude] = useState("");
   const [thought, setThought] = useState("");
   return (
     <div className="flow">
       {step === 0 && (<>
-        <p className="flow-eyebrow">Close the day gently</p>
-        <h2 className="flow-title">Before you close the day,<br />find one thing.</h2>
-        <p className="flow-body">It doesn't have to be beautiful or meaningful.<br />Just one moment that was there for you — however small.</p>
-        <textarea value={gratitude} onChange={(e) => setGratitude(e.target.value)} placeholder="I'm grateful for..." style={{ minHeight: 100 }} />
-        <button className="btn-primary" onClick={() => setStep(1)} disabled={!gratitude.trim()}>Continue</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <p className="flow-eyebrow">{t("eod.0.eyebrow")}</p>
+        <h2 className="flow-title"><T k="eod.0.title" /></h2>
+        <p className="flow-body"><T k="eod.0.body" /></p>
+        <textarea value={gratitude} onChange={(e) => setGratitude(e.target.value)} placeholder={t("eod.0.placeholder")} style={{ minHeight: 100 }} />
+        <button className="btn-primary" onClick={() => setStep(1)} disabled={!gratitude.trim()}>{t("eod.0.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 1 && (<>
-        <p className="flow-eyebrow">Carry this into the night</p>
-        <h2 className="flow-title">Now choose what you<br />take with you.</h2>
-        <p className="flow-body">One good thought, a feeling, or an intention for tomorrow.<br />Something quiet to hold onto while you rest.</p>
-        <textarea value={thought} onChange={(e) => setThought(e.target.value)} placeholder="Tonight I choose to remember..." style={{ minHeight: 100 }} />
-        <button className="btn-primary" onClick={() => setStep(2)} disabled={!thought.trim()}>Now breathe</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <p className="flow-eyebrow">{t("eod.1.eyebrow")}</p>
+        <h2 className="flow-title"><T k="eod.1.title" /></h2>
+        <p className="flow-body"><T k="eod.1.body" /></p>
+        <textarea value={thought} onChange={(e) => setThought(e.target.value)} placeholder={t("eod.1.placeholder")} style={{ minHeight: 100 }} />
+        <button className="btn-primary" onClick={() => setStep(2)} disabled={!thought.trim()}>{t("eod.1.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 2 && (<>
-        <p className="flow-eyebrow">Release the day</p>
-        <p className="flow-body">Breathe out the day.<br />You don't need to take all of it with you.</p>
+        <p className="flow-eyebrow">{t("eod.2.eyebrow")}</p>
+        <p className="flow-body"><T k="eod.2.body" /></p>
         <BreathingCircle onComplete={() => setStep(3)} />
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 3 && (<>
         <span className="final-icon">◯</span>
-        <h2 className="final-title">Rest now.</h2>
-        <p className="final-sub">You came back today. That's enough.</p>
+        <h2 className="final-title">{t("eod.3.title")}</h2>
+        <p className="final-sub">{t("eod.3.sub")}</p>
         <FinalActions onHome={onBack} />
       </>)}
     </div>
@@ -374,17 +379,18 @@ function EndOfDayFlow({ onBack }: { onBack: () => void }) {
 }
 
 function JustBreatheFlow({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   return (
     <div className="flow">
       {step === 0 && (<>
         <BreathingCircle onComplete={() => setStep(1)} />
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 1 && (<>
         <span className="final-icon">◌</span>
-        <h2 className="final-title">You came back.</h2>
-        <p className="final-sub">That's The Return.</p>
+        <h2 className="final-title">{t("jb.title")}</h2>
+        <p className="final-sub">{t("jb.sub")}</p>
         <FinalActions onHome={onBack} />
       </>)}
     </div>

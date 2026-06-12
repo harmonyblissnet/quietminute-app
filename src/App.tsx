@@ -5,6 +5,8 @@ import { DailyPracticeRoot } from "./practice/DailyPracticeRoot";
 import { WaitlistModal } from "./practice/WaitlistModal";
 import { dailyPracticeLaunched } from "./practice/config";
 import { PrivacyStatement } from "./PrivacyStatement";
+import { LanguageProvider, useT, T } from "./i18n/LanguageContext";
+import { LanguageSwitcher } from "./i18n/LanguageSwitcher";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
@@ -178,6 +180,10 @@ const css = `
   /* Footer links + legal page */
   .footer-links { display: block; margin-top: 10px; }
   .footer-links a { margin: 0 2px; }
+  .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
+  .lang-btn { background: none; border: none; font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.14em; color: ${palette.border}; cursor: pointer; padding: 2px 0; transition: color 0.2s; }
+  .lang-btn:hover { color: ${palette.textLight}; }
+  .lang-btn.is-active { color: ${palette.accent}; }
   .legal { width: 100%; max-width: 620px; text-align: left; animation: fadeIn 0.5s ease; }
   .legal h1 { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: ${palette.textDark}; line-height: 1.3; margin-top: 8px; }
   .legal h2 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: ${palette.textDark}; margin: 26px 0 6px; }
@@ -386,14 +392,15 @@ function JustBreatheFlow({ onBack }: { onBack: () => void }) {
 }
 
 const modes = [
-  { id: "no-space", icon: "✦", label: "No space for me", subtitle: "I keep coming last" },
-  { id: "head-full", icon: "◈", label: "Mind racing", subtitle: "I can't land anywhere" },
-  { id: "end-of-day", icon: "◯", label: "End of day", subtitle: "I'm ready to let go" },
-  { id: "just-breathe", icon: "◌", label: "Just breathe", subtitle: "One quiet minute, nothing more" },
+  { id: "no-space", icon: "✦" },
+  { id: "head-full", icon: "◈" },
+  { id: "end-of-day", icon: "◯" },
+  { id: "just-breathe", icon: "◌" },
 ];
 
 function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
   const { configured } = useAuth();
+  const { t } = useT();
   const [selected, setSelected] = useState<string | null>(null);
   const goHome = () => setSelected(null);
   return (
@@ -402,7 +409,7 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
         <div className="home">
           <div className="home-header">
             <p className="eyebrow">The Quiet Minute</p>
-            <h2 className="home-title">Where are you<br />right now?</h2>
+            <h2 className="home-title"><T k="home.title" /></h2>
           </div>
           <div className="gold-line" />
           <div className="mode-list">
@@ -410,8 +417,8 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
               <button key={m.id} className="mode-card" onClick={() => setSelected(m.id)}>
                 <span className="mode-icon">{m.icon}</span>
                 <div>
-                  <p className="mode-label">{m.label}</p>
-                  <p className="mode-sub">{m.subtitle}</p>
+                  <p className="mode-label">{t(`mode.${m.id}.label`)}</p>
+                  <p className="mode-sub">{t(`mode.${m.id}.sub`)}</p>
                 </div>
               </button>
             ))}
@@ -420,11 +427,9 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
             <div className="enter-premium">
               <div className="gold-line" />
               <button className="enter-premium-link" onClick={onEnterPremium}>
-                enter the daily practice ✦
+                {t("enter.link")}
               </button>
-              <span className="enter-premium-note">
-                members only — the rest of The Quiet Minute is always free
-              </span>
+              <span className="enter-premium-note">{t("enter.note")}</span>
             </div>
           )}
         </div>
@@ -437,7 +442,8 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
   );
 }
 
-export default function App() {
+function AppShell() {
+  const { t } = useT();
   const [view, setView] = useState<"home" | "premium">("home");
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [hash, setHash] = useState(window.location.hash);
@@ -458,13 +464,13 @@ export default function App() {
   };
 
   return (
-    <AuthProvider>
+    <>
       <style>{css}</style>
       <div className="page">
         <header className="page-header">
-          <p className="page-eyebrow">A practice of coming home</p>
+          <p className="page-eyebrow">{t("header.eyebrow")}</p>
           <h1 className="page-title">The Quiet Minute</h1>
-          <p className="page-sub">One quiet minute. That's all this is.</p>
+          <p className="page-sub">{t("header.sub")}</p>
           <div className="page-divider" />
         </header>
         {showPrivacy ? (
@@ -475,15 +481,26 @@ export default function App() {
           <DailyPracticeRoot onExit={() => setView("home")} />
         )}
         <footer className="site-footer">
-          A practice by <a href="https://naomietnel.com">Naomi Etnel</a>
+          <LanguageSwitcher />
+          {t("footer.by")} <a href="https://naomietnel.com">Naomi Etnel</a>
           <span className="footer-links">
-            <a href="#privacy">privacy</a>
+            <a href="#privacy">{t("footer.privacy")}</a>
             <span aria-hidden="true"> · </span>
-            <a href="mailto:hello@naomietnel.com">contact</a>
+            <a href="mailto:hello@naomietnel.com">{t("footer.contact")}</a>
           </span>
         </footer>
       </div>
       {showWaitlist && <WaitlistModal onClose={() => setShowWaitlist(false)} />}
-    </AuthProvider>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AuthProvider>
+        <AppShell />
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

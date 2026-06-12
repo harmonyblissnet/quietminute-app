@@ -2,10 +2,8 @@
 // footer. English first, Dutch below (the app itself is English).
 //
 // NOTE for Naomi — please confirm/adjust before relying on this:
-//   • the controller name ("Naomi Etnel" — add a business/KvK number if you have one)
+//   • the controller name ("Naomi Etnel" — KvK number to be added)
 //   • the "last updated" date
-//   • the analytics sentence — keep it only if you enable Vercel Web Analytics;
-//     otherwise delete that one line in both languages.
 // It's an honest, GDPR-minded draft, not formal legal advice — a quick glance
 // from a lawyer is wise for full coverage.
 
@@ -59,9 +57,7 @@ export function PrivacyStatement({ onBack }: { onBack: () => void }) {
       <p>
         <strong>Running the site.</strong> The site is hosted by Vercel. As with
         any website, their servers process basic technical information (such as
-        your IP address and browser) to deliver and secure the site. We may use
-        privacy-friendly, cookieless analytics to count visits — this records no
-        personal data and does not profile you.
+        your IP address and browser) to deliver and secure the site.
       </p>
 
       <h2>Cookies</h2>
@@ -151,9 +147,7 @@ export function PrivacyStatement({ onBack }: { onBack: () => void }) {
           <strong>De site draaiende houden.</strong> De site wordt gehost door
           Vercel. Zoals bij elke website verwerken hun servers basale technische
           gegevens (zoals je IP-adres en browser) om de site te tonen en te
-          beveiligen. We gebruiken mogelijk privacyvriendelijke, cookieloze
-          statistieken om bezoeken te tellen — dit legt geen persoonsgegevens vast
-          en maakt geen profiel van je.
+          beveiligen.
         </p>
 
         <h2>Cookies</h2>

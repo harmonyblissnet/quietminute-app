@@ -37,6 +37,7 @@ function Session({
   onStop: () => void;
 }) {
   const [label, setLabel] = useState(PHASE_LABEL[pattern.cycle[0].phase]);
+  const [guide, setGuide] = useState(pattern.cycle[0].guide);
   const [size, setSize] = useState(SMALL);
   const [transMs, setTransMs] = useState(1000);
   const timerRef = useRef<number | null>(null);
@@ -78,6 +79,7 @@ function Session({
     function runPhase(index: number) {
       const s = pattern.cycle[index];
       setLabel(PHASE_LABEL[s.phase]);
+      setGuide(s.guide);
       setTransMs(s.seconds * 1000);
       if (s.phase === "inhale") {
         setSize(BIG);
@@ -124,6 +126,7 @@ function Session({
           </div>
         </div>
       </div>
+      <p className="breath-guide">{guide}</p>
       <button className="btn-back" onClick={onStop}>end session</button>
       {sound.file && <audio ref={ambientRef} src={sound.file} loop preload="none" />}
     </div>

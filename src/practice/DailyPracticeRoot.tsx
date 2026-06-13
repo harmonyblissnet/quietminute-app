@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { AuthScreen } from "../auth/AuthScreen";
 import { useDailyAccess } from "./useDailyAccess";
@@ -7,8 +7,25 @@ import { Dashboard } from "./Dashboard";
 import { BreathingSession } from "./BreathingSession";
 import { TheRelease } from "./TheRelease";
 import { SilentCalendar } from "./SilentCalendar";
+import { isWelcomed, markWelcomed } from "./practiceStorage";
 
 type Screen = "dashboard" | "breathing" | "release" | "calendar";
+
+// A brief, one-time welcome the first time someone opens The Daily Practice.
+// Fades on its own after 4s, or on tap.
+function WelcomeMoment({ onDone }: { onDone: () => void }) {
+  useEffect(() => {
+    const id = window.setTimeout(onDone, 4000);
+    return () => clearTimeout(id);
+  }, [onDone]);
+  return (
+    <div className="welcome" onClick={onDone}>
+      <span className="practice-mark">✦</span>
+      <p className="welcome-text">You found your way here.<br />This moment is yours.</p>
+      <p className="welcome-word">Welcome.</p>
+    </div>
+  );
+}
 
 // The gated entry point for The Daily Practice. Decides, in order:
 //   accounts off → gentle note · loading → wait · signed out → sign in ·
@@ -17,6 +34,7 @@ export function DailyPracticeRoot({ onExit }: { onExit: () => void }) {
   const { configured, loading: authLoading, user } = useAuth();
   const { hasAccess, loading: accessLoading } = useDailyAccess();
   const [screen, setScreen] = useState<Screen>("dashboard");
+  const [welcomed, setWelcomed] = useState(isWelcomed);
 
   if (!configured) {
     return (
@@ -51,6 +69,10 @@ export function DailyPracticeRoot({ onExit }: { onExit: () => void }) {
 
   if (!hasAccess) {
     return <WhatsInside onBack={onExit} />;
+  }
+
+  if (!welcomed) {
+    return <WelcomeMoment onDone={() => { markWelcomed(); setWelcomed(true); }} />;
   }
 
   const back = () => setScreen("dashboard");

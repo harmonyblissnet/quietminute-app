@@ -1,7 +1,7 @@
 // The Daily Practice — static content & shapes.
 
 export type BreathPhase = "inhale" | "hold" | "exhale";
-export type BreathStep = { phase: BreathPhase; seconds: number };
+export type BreathStep = { phase: BreathPhase; seconds: number; guide: string };
 export type BreathingPattern = {
   id: string;
   label: string;
@@ -20,8 +20,8 @@ export const breathingPatterns: BreathingPattern[] = [
     detail: "In for 4, out for 4",
     mood: "Grounding",
     cycle: [
-      { phase: "inhale", seconds: 4 },
-      { phase: "exhale", seconds: 4 },
+      { phase: "inhale", seconds: 4, guide: "Breathe in. You are here." },
+      { phase: "exhale", seconds: 4, guide: "Let it go. You don't have to hold this." },
     ],
   },
   {
@@ -30,9 +30,9 @@ export const breathingPatterns: BreathingPattern[] = [
     detail: "In for 4, hold for 7, out for 8",
     mood: "Releasing",
     cycle: [
-      { phase: "inhale", seconds: 4 },
-      { phase: "hold", seconds: 7 },
-      { phase: "exhale", seconds: 8 },
+      { phase: "inhale", seconds: 4, guide: "Take it in slowly." },
+      { phase: "hold", seconds: 7, guide: "Stay here for a moment." },
+      { phase: "exhale", seconds: 8, guide: "Release. All of it." },
     ],
   },
   {
@@ -41,10 +41,10 @@ export const breathingPatterns: BreathingPattern[] = [
     detail: "In for 4, hold for 4, out for 4, hold for 4",
     mood: "Centering",
     cycle: [
-      { phase: "inhale", seconds: 4 },
-      { phase: "hold", seconds: 4 },
-      { phase: "exhale", seconds: 4 },
-      { phase: "hold", seconds: 4 },
+      { phase: "inhale", seconds: 4, guide: "Breathe in." },
+      { phase: "hold", seconds: 4, guide: "You are safe here." },
+      { phase: "exhale", seconds: 4, guide: "Let go." },
+      { phase: "hold", seconds: 4, guide: "Rest here." },
     ],
   },
 ];

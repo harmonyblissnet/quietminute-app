@@ -127,6 +127,10 @@ const css = `
   .practice-mark { font-size: 22px; color: ${palette.accent}; filter: drop-shadow(0 2px 8px ${palette.accentGlow}); }
   .practice-eyebrow { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: ${palette.accent}; font-weight: 400; text-align: center; }
   .practice-rule { width: 48px; height: 1px; background: linear-gradient(90deg, transparent, ${palette.accentLight}, transparent); }
+  .welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 60px 12px; min-height: 260px; cursor: default; animation: fadeIn 0.8s ease; }
+  .welcome-text { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 300; color: ${palette.textDark}; line-height: 1.5; }
+  .welcome-word { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: ${palette.accent}; }
+  .breath-guide { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px; color: ${palette.accent}; text-align: center; max-width: 280px; min-height: 21px; line-height: 1.5; }
 
   .wi-intro { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 300; line-height: 1.6; color: ${palette.textDark}; text-align: center; }
   .wi-body { font-size: 14px; font-weight: 300; color: ${palette.textMid}; line-height: 1.8; text-align: center; }

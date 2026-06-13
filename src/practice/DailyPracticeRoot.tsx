@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { AuthScreen } from "../auth/AuthScreen";
+import { useT, T } from "../i18n/LanguageContext";
 import { useDailyAccess } from "./useDailyAccess";
 import { WhatsInside } from "./WhatsInside";
 import { Dashboard } from "./Dashboard";
@@ -14,6 +15,7 @@ type Screen = "dashboard" | "breathing" | "release" | "calendar";
 // A brief, one-time welcome the first time someone opens The Daily Practice.
 // Fades on its own after 4s, or on tap.
 function WelcomeMoment({ onDone }: { onDone: () => void }) {
+  const { t } = useT();
   useEffect(() => {
     const id = window.setTimeout(onDone, 4000);
     return () => clearTimeout(id);
@@ -21,31 +23,29 @@ function WelcomeMoment({ onDone }: { onDone: () => void }) {
   return (
     <div className="welcome" onClick={onDone}>
       <span className="practice-mark">✦</span>
-      <p className="welcome-text">You found your way here.<br />This moment is yours.</p>
-      <p className="welcome-word">Welcome.</p>
+      <p className="welcome-text"><T k="welcome.text" /></p>
+      <p className="welcome-word">{t("welcome.word")}</p>
     </div>
   );
 }
 
 // The gated entry point for The Daily Practice. Decides, in order:
 //   accounts off → gentle note · loading → wait · signed out → sign in ·
-//   no entitlement → What's Inside (the offer) · entitled → the practice itself.
+//   no entitlement → What's Inside · entitled → welcome (once) → the practice.
 export function DailyPracticeRoot({ onExit }: { onExit: () => void }) {
   const { configured, loading: authLoading, user } = useAuth();
   const { hasAccess, loading: accessLoading } = useDailyAccess();
+  const { t } = useT();
   const [screen, setScreen] = useState<Screen>("dashboard");
   const [welcomed, setWelcomed] = useState(isWelcomed);
 
   if (!configured) {
     return (
       <div className="flow">
-        <p className="flow-eyebrow">Daily practice</p>
-        <h2 className="flow-title">This space is<br />being prepared.</h2>
-        <p className="flow-body">
-          Member accounts aren't switched on just yet.<br />
-          The practice above is always open to you.
-        </p>
-        <button className="btn-back" onClick={onExit}>← back</button>
+        <p className="flow-eyebrow">The Daily Practice</p>
+        <h2 className="flow-title"><T k="gate.title" /></h2>
+        <p className="flow-body"><T k="gate.body" /></p>
+        <button className="btn-back" onClick={onExit}>{t("common.back")}</button>
       </div>
     );
   }
@@ -53,7 +53,7 @@ export function DailyPracticeRoot({ onExit }: { onExit: () => void }) {
   if (authLoading || accessLoading) {
     return (
       <div className="flow">
-        <p className="flow-body">one moment…</p>
+        <p className="flow-body">{t("gate.loading")}</p>
       </div>
     );
   }
@@ -62,7 +62,7 @@ export function DailyPracticeRoot({ onExit }: { onExit: () => void }) {
     return (
       <div className="flow">
         <AuthScreen />
-        <button className="btn-back" onClick={onExit}>← back to the free practice</button>
+        <button className="btn-back" onClick={onExit}>{t("common.backFree")}</button>
       </div>
     );
   }

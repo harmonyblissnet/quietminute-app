@@ -5,6 +5,8 @@ import { DailyPracticeRoot } from "./practice/DailyPracticeRoot";
 import { WaitlistModal } from "./practice/WaitlistModal";
 import { dailyPracticeLaunched } from "./practice/config";
 import { PrivacyStatement } from "./PrivacyStatement";
+import { LanguageProvider, useT, T } from "./i18n/LanguageContext";
+import { LanguageSwitcher } from "./i18n/LanguageSwitcher";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
@@ -125,6 +127,10 @@ const css = `
   .practice-mark { font-size: 22px; color: ${palette.accent}; filter: drop-shadow(0 2px 8px ${palette.accentGlow}); }
   .practice-eyebrow { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: ${palette.accent}; font-weight: 400; text-align: center; }
   .practice-rule { width: 48px; height: 1px; background: linear-gradient(90deg, transparent, ${palette.accentLight}, transparent); }
+  .welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 60px 12px; min-height: 260px; cursor: default; animation: fadeIn 0.8s ease; }
+  .welcome-text { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 300; color: ${palette.textDark}; line-height: 1.5; }
+  .welcome-word { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: ${palette.accent}; }
+  .breath-guide { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px; color: ${palette.accent}; text-align: center; max-width: 280px; min-height: 21px; line-height: 1.5; }
 
   .wi-intro { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 300; line-height: 1.6; color: ${palette.textDark}; text-align: center; }
   .wi-body { font-size: 14px; font-weight: 300; color: ${palette.textMid}; line-height: 1.8; text-align: center; }
@@ -178,6 +184,10 @@ const css = `
   /* Footer links + legal page */
   .footer-links { display: block; margin-top: 10px; }
   .footer-links a { margin: 0 2px; }
+  .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
+  .lang-btn { background: none; border: none; font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.14em; color: ${palette.border}; cursor: pointer; padding: 2px 0; transition: color 0.2s; }
+  .lang-btn:hover { color: ${palette.textLight}; }
+  .lang-btn.is-active { color: ${palette.accent}; }
   .legal { width: 100%; max-width: 620px; text-align: left; animation: fadeIn 0.5s ease; }
   .legal h1 { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: ${palette.textDark}; line-height: 1.3; margin-top: 8px; }
   .legal h2 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: ${palette.textDark}; margin: 26px 0 6px; }
@@ -194,6 +204,7 @@ const css = `
 `;
 
 function BreathingCircle({ onComplete }: { onComplete: () => void }) {
+  const { t } = useT();
   const [phase, setPhase] = useState("inhale");
   const [count, setCount] = useState(4);
   const phaseRef = useRef("inhale");
@@ -222,7 +233,7 @@ function BreathingCircle({ onComplete }: { onComplete: () => void }) {
 
   const size = phase === "inhale" ? 134 : phase === "hold" ? 112 : 72;
   const glow = phase === "inhale" ? `0 0 48px ${palette.accentGlow}` : phase === "hold" ? `0 0 28px ${palette.accentGlow}` : `0 0 8px ${palette.accentGlow}`;
-  const label = phase === "inhale" ? "Breathe in" : phase === "hold" ? "Hold" : "Breathe out";
+  const label = phase === "inhale" ? t("breath.in") : phase === "hold" ? t("breath.hold") : t("breath.out");
 
   return (
     <div className="breath-wrap">
@@ -239,53 +250,55 @@ function BreathingCircle({ onComplete }: { onComplete: () => void }) {
 }
 
 function FinalActions({ onHome }: { onHome: () => void }) {
+  const { t } = useT();
   return (
     <div className="final-actions">
-      <a href="https://naomietnel.com" className="btn-deeper">Learn more about The Return</a>
-      <button className="btn-back" onClick={onHome}>← back home</button>
+      <a href="https://naomietnel.com" className="btn-deeper">{t("final.learnMore")}</a>
+      <button className="btn-back" onClick={onHome}>{t("final.backHome")}</button>
     </div>
   );
 }
 
 function NoSpaceFlow({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   const actions = [
-    { icon: "☕", text: "Make something for yourself" },
-    { icon: "🌬️", text: "Breathe a little longer" },
-    { icon: "🚪", text: "Step outside" },
-    { icon: "✦", text: "Your own choice" },
+    { icon: "☕", k: "ns.action.coffee" },
+    { icon: "🌬️", k: "ns.action.breathe" },
+    { icon: "🚪", k: "ns.action.outside" },
+    { icon: "✦", k: "ns.action.own" },
   ];
   return (
     <div className="flow">
       {step === 0 && (<>
-        <p className="flow-eyebrow">This moment is yours</p>
-        <h2 className="flow-title">This minute is yours.<br />Not because you earned it —<br />you just needed it.</h2>
-        <p className="flow-body">And that's enough. No explaining, no justifying.<br />You deserve to be here.</p>
-        <button className="btn-primary" onClick={() => setStep(1)}>I'm ready</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <p className="flow-eyebrow">{t("ns.0.eyebrow")}</p>
+        <h2 className="flow-title"><T k="ns.0.title" /></h2>
+        <p className="flow-body"><T k="ns.0.body" /></p>
+        <button className="btn-primary" onClick={() => setStep(1)}>{t("ns.0.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 1 && (<>
-        <p className="flow-eyebrow">Let's breathe first</p>
-        <p className="flow-body">Just one minute.<br />Nothing else is required of you right now.</p>
+        <p className="flow-eyebrow">{t("ns.1.eyebrow")}</p>
+        <p className="flow-body"><T k="ns.1.body" /></p>
         <BreathingCircle onComplete={() => setStep(2)} />
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 2 && (<>
-        <p className="flow-eyebrow">Now, something small for you</p>
-        <p className="flow-body">You've taken a breath. Now do one small thing — just for you.<br />It doesn't have to be big. It just has to be yours.</p>
+        <p className="flow-eyebrow">{t("ns.2.eyebrow")}</p>
+        <p className="flow-body"><T k="ns.2.body" /></p>
         <div className="action-grid">
           {actions.map((a) => (
-            <button key={a.text} className="action-card" onClick={() => setStep(3)}>
-              <span className="action-emoji">{a.icon}</span>{a.text}
+            <button key={a.k} className="action-card" onClick={() => setStep(3)}>
+              <span className="action-emoji">{a.icon}</span>{t(a.k)}
             </button>
           ))}
         </div>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 3 && (<>
         <span className="final-icon">✦</span>
-        <h2 className="final-title">Be present for it.</h2>
-        <p className="final-sub">That's The Return.</p>
+        <h2 className="final-title">{t("ns.3.title")}</h2>
+        <p className="final-sub">{t("ns.3.sub")}</p>
         <FinalActions onHome={onBack} />
       </>)}
     </div>
@@ -293,36 +306,37 @@ function NoSpaceFlow({ onBack }: { onBack: () => void }) {
 }
 
 function HeadFullFlow({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   const [text, setText] = useState("");
   return (
     <div className="flow">
       {step === 0 && (<>
-        <p className="flow-eyebrow">Nothing more is required of you</p>
-        <h2 className="flow-title">Your mind is racing.<br />That's okay.</h2>
-        <p className="flow-body">You don't need to figure anything out right now.<br />Nothing is required of you in this moment.<br />Just let it out.</p>
-        <button className="btn-primary" onClick={() => setStep(1)}>Let me write it out</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <p className="flow-eyebrow">{t("hf.0.eyebrow")}</p>
+        <h2 className="flow-title"><T k="hf.0.title" /></h2>
+        <p className="flow-body"><T k="hf.0.body" /></p>
+        <button className="btn-primary" onClick={() => setStep(1)}>{t("hf.0.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 1 && (<>
         <p className="flow-body" style={{ fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
-          Leave it here. Whatever is sitting too heavy — write it out. All of it.
+          {t("hf.1.prompt")}
         </p>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Just type. No one is reading this." />
-        <p className="privacy-note">What you write here is never saved or stored.<br />It disappears when you let go.</p>
-        <button className="btn-primary" onClick={() => setStep(2)} disabled={!text.trim()}>Let it go</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={t("hf.1.placeholder")} />
+        <p className="privacy-note"><T k="hf.1.privacy" /></p>
+        <button className="btn-primary" onClick={() => setStep(2)} disabled={!text.trim()}>{t("hf.1.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 2 && (<>
-        <p className="flow-eyebrow">Now breathe it out</p>
-        <p className="flow-body">You put it down.<br />Let your body follow.</p>
+        <p className="flow-eyebrow">{t("hf.2.eyebrow")}</p>
+        <p className="flow-body"><T k="hf.2.body" /></p>
         <BreathingCircle onComplete={() => setStep(3)} />
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 3 && (<>
         <span className="final-icon">◈</span>
-        <h2 className="final-title">You let it out<br />for a minute.</h2>
-        <p className="final-sub">That counts.</p>
+        <h2 className="final-title"><T k="hf.3.title" /></h2>
+        <p className="final-sub">{t("hf.3.sub")}</p>
         <FinalActions onHome={onBack} />
       </>)}
     </div>
@@ -330,37 +344,38 @@ function HeadFullFlow({ onBack }: { onBack: () => void }) {
 }
 
 function EndOfDayFlow({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   const [gratitude, setGratitude] = useState("");
   const [thought, setThought] = useState("");
   return (
     <div className="flow">
       {step === 0 && (<>
-        <p className="flow-eyebrow">Close the day gently</p>
-        <h2 className="flow-title">Before you close the day,<br />find one thing.</h2>
-        <p className="flow-body">It doesn't have to be beautiful or meaningful.<br />Just one moment that was there for you — however small.</p>
-        <textarea value={gratitude} onChange={(e) => setGratitude(e.target.value)} placeholder="I'm grateful for..." style={{ minHeight: 100 }} />
-        <button className="btn-primary" onClick={() => setStep(1)} disabled={!gratitude.trim()}>Continue</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <p className="flow-eyebrow">{t("eod.0.eyebrow")}</p>
+        <h2 className="flow-title"><T k="eod.0.title" /></h2>
+        <p className="flow-body"><T k="eod.0.body" /></p>
+        <textarea value={gratitude} onChange={(e) => setGratitude(e.target.value)} placeholder={t("eod.0.placeholder")} style={{ minHeight: 100 }} />
+        <button className="btn-primary" onClick={() => setStep(1)} disabled={!gratitude.trim()}>{t("eod.0.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 1 && (<>
-        <p className="flow-eyebrow">Carry this into the night</p>
-        <h2 className="flow-title">Now choose what you<br />take with you.</h2>
-        <p className="flow-body">One good thought, a feeling, or an intention for tomorrow.<br />Something quiet to hold onto while you rest.</p>
-        <textarea value={thought} onChange={(e) => setThought(e.target.value)} placeholder="Tonight I choose to remember..." style={{ minHeight: 100 }} />
-        <button className="btn-primary" onClick={() => setStep(2)} disabled={!thought.trim()}>Now breathe</button>
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <p className="flow-eyebrow">{t("eod.1.eyebrow")}</p>
+        <h2 className="flow-title"><T k="eod.1.title" /></h2>
+        <p className="flow-body"><T k="eod.1.body" /></p>
+        <textarea value={thought} onChange={(e) => setThought(e.target.value)} placeholder={t("eod.1.placeholder")} style={{ minHeight: 100 }} />
+        <button className="btn-primary" onClick={() => setStep(2)} disabled={!thought.trim()}>{t("eod.1.cta")}</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 2 && (<>
-        <p className="flow-eyebrow">Release the day</p>
-        <p className="flow-body">Breathe out the day.<br />You don't need to take all of it with you.</p>
+        <p className="flow-eyebrow">{t("eod.2.eyebrow")}</p>
+        <p className="flow-body"><T k="eod.2.body" /></p>
         <BreathingCircle onComplete={() => setStep(3)} />
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 3 && (<>
         <span className="final-icon">◯</span>
-        <h2 className="final-title">Rest now.</h2>
-        <p className="final-sub">You came back today. That's enough.</p>
+        <h2 className="final-title">{t("eod.3.title")}</h2>
+        <p className="final-sub">{t("eod.3.sub")}</p>
         <FinalActions onHome={onBack} />
       </>)}
     </div>
@@ -368,17 +383,18 @@ function EndOfDayFlow({ onBack }: { onBack: () => void }) {
 }
 
 function JustBreatheFlow({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   return (
     <div className="flow">
       {step === 0 && (<>
         <BreathingCircle onComplete={() => setStep(1)} />
-        <button className="btn-back" onClick={onBack}>← back</button>
+        <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
       </>)}
       {step === 1 && (<>
         <span className="final-icon">◌</span>
-        <h2 className="final-title">You came back.</h2>
-        <p className="final-sub">That's The Return.</p>
+        <h2 className="final-title">{t("jb.title")}</h2>
+        <p className="final-sub">{t("jb.sub")}</p>
         <FinalActions onHome={onBack} />
       </>)}
     </div>
@@ -386,14 +402,15 @@ function JustBreatheFlow({ onBack }: { onBack: () => void }) {
 }
 
 const modes = [
-  { id: "no-space", icon: "✦", label: "No space for me", subtitle: "I keep coming last" },
-  { id: "head-full", icon: "◈", label: "Mind racing", subtitle: "I can't land anywhere" },
-  { id: "end-of-day", icon: "◯", label: "End of day", subtitle: "I'm ready to let go" },
-  { id: "just-breathe", icon: "◌", label: "Just breathe", subtitle: "One quiet minute, nothing more" },
+  { id: "no-space", icon: "✦" },
+  { id: "head-full", icon: "◈" },
+  { id: "end-of-day", icon: "◯" },
+  { id: "just-breathe", icon: "◌" },
 ];
 
 function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
   const { configured } = useAuth();
+  const { t } = useT();
   const [selected, setSelected] = useState<string | null>(null);
   const goHome = () => setSelected(null);
   return (
@@ -402,7 +419,7 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
         <div className="home">
           <div className="home-header">
             <p className="eyebrow">The Quiet Minute</p>
-            <h2 className="home-title">Where are you<br />right now?</h2>
+            <h2 className="home-title"><T k="home.title" /></h2>
           </div>
           <div className="gold-line" />
           <div className="mode-list">
@@ -410,8 +427,8 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
               <button key={m.id} className="mode-card" onClick={() => setSelected(m.id)}>
                 <span className="mode-icon">{m.icon}</span>
                 <div>
-                  <p className="mode-label">{m.label}</p>
-                  <p className="mode-sub">{m.subtitle}</p>
+                  <p className="mode-label">{t(`mode.${m.id}.label`)}</p>
+                  <p className="mode-sub">{t(`mode.${m.id}.sub`)}</p>
                 </div>
               </button>
             ))}
@@ -420,11 +437,9 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
             <div className="enter-premium">
               <div className="gold-line" />
               <button className="enter-premium-link" onClick={onEnterPremium}>
-                enter the daily practice ✦
+                {t("enter.link")}
               </button>
-              <span className="enter-premium-note">
-                members only — the rest of The Quiet Minute is always free
-              </span>
+              <span className="enter-premium-note">{t("enter.note")}</span>
             </div>
           )}
         </div>
@@ -437,7 +452,8 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
   );
 }
 
-export default function App() {
+function AppShell() {
+  const { t } = useT();
   const [view, setView] = useState<"home" | "premium">("home");
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [hash, setHash] = useState(window.location.hash);
@@ -458,13 +474,13 @@ export default function App() {
   };
 
   return (
-    <AuthProvider>
+    <>
       <style>{css}</style>
       <div className="page">
         <header className="page-header">
-          <p className="page-eyebrow">A practice of coming home</p>
+          <p className="page-eyebrow">{t("header.eyebrow")}</p>
           <h1 className="page-title">The Quiet Minute</h1>
-          <p className="page-sub">One quiet minute. That's all this is.</p>
+          <p className="page-sub">{t("header.sub")}</p>
           <div className="page-divider" />
         </header>
         {showPrivacy ? (
@@ -475,15 +491,26 @@ export default function App() {
           <DailyPracticeRoot onExit={() => setView("home")} />
         )}
         <footer className="site-footer">
-          A practice by <a href="https://naomietnel.com">Naomi Etnel</a>
+          <LanguageSwitcher />
+          {t("footer.by")} <a href="https://naomietnel.com">Naomi Etnel</a>
           <span className="footer-links">
-            <a href="#privacy">privacy</a>
+            <a href="#privacy">{t("footer.privacy")}</a>
             <span aria-hidden="true"> · </span>
-            <a href="mailto:hello@naomietnel.com">contact</a>
+            <a href="mailto:hello@naomietnel.com">{t("footer.contact")}</a>
           </span>
         </footer>
       </div>
       {showWaitlist && <WaitlistModal onClose={() => setShowWaitlist(false)} />}
-    </AuthProvider>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AuthProvider>
+        <AppShell />
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
+import { useT, T } from "../i18n/LanguageContext";
 
 type Status = "idle" | "busy" | "done" | "error";
 
 // Pre-launch waitlist. Posts the email to /api/waitlist (a serverless function
 // that adds it to the MailerLite list — the API key stays server-side).
 export function WaitlistModal({ onClose }: { onClose: () => void }) {
+  const { t } = useT();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -38,10 +40,10 @@ export function WaitlistModal({ onClose }: { onClose: () => void }) {
         | { error?: string; code?: number | string }
         | null;
       const code = data?.code ? ` (${data.code})` : "";
-      setErrorMsg((data?.error ?? "something didn't go through.") + code);
+      setErrorMsg((data?.error ?? t("wl.error")) + code);
       setStatus("error");
     } catch {
-      setErrorMsg("something didn't go through. please try again in a moment.");
+      setErrorMsg(t("wl.error"));
       setStatus("error");
     }
   }
@@ -49,47 +51,36 @@ export function WaitlistModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose} aria-label="close">×</button>
+        <button className="modal-close" onClick={onClose} aria-label={t("wl.close")}>×</button>
         <span className="modal-mark">✦</span>
 
         {status === "done" ? (
           <>
-            <h2 className="modal-title">You're on the list.</h2>
-            <p className="modal-body">
-              I'll write to you when The Daily Practice opens.<br />
-              Until then — the four free modes are always here.
-            </p>
-            <button className="btn-primary" onClick={onClose}>close</button>
+            <h2 className="modal-title">{t("wl.doneTitle")}</h2>
+            <p className="modal-body"><T k="wl.doneBody" /></p>
+            <button className="btn-primary" onClick={onClose}>{t("wl.close")}</button>
           </>
         ) : (
           <>
-            <h2 className="modal-title">Something quiet<br />is on its way.</h2>
-            <p className="modal-body">
-              The Daily Practice is almost ready —<br />
-              a deeper space to come home to.
-            </p>
-            <p className="modal-body">
-              Leave your email and you'll be the first to know when it opens.
-              No spam. Just one quiet message.
-            </p>
+            <h2 className="modal-title"><T k="wl.title" /></h2>
+            <p className="modal-body"><T k="wl.body1" /></p>
+            <p className="modal-body">{t("wl.body2")}</p>
             <form className="modal-form" onSubmit={submit}>
               <input
                 className="modal-input"
                 type="email"
                 required
                 autoComplete="email"
-                placeholder="your email"
+                placeholder={t("wl.placeholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <button className="btn-primary" type="submit" disabled={status === "busy"}>
-                {status === "busy" ? "one moment…" : "notify me →"}
+                {status === "busy" ? t("wl.busy") : t("wl.submit")}
               </button>
             </form>
-            {status === "error" && errorMsg && (
-              <p className="modal-error">{errorMsg}</p>
-            )}
-            <p className="modal-foot">The rest of The Quiet Minute is always free.</p>
+            {status === "error" && errorMsg && <p className="modal-error">{errorMsg}</p>}
+            <p className="modal-foot">{t("wl.foot")}</p>
           </>
         )}
       </div>

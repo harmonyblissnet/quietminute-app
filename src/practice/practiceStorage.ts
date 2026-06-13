@@ -56,4 +56,22 @@ export function dismissUpsell(): void {
   }
 }
 
+const WELCOME_KEY = "tqm_practice_welcomed";
+
+export function isWelcomed(): boolean {
+  try {
+    return localStorage.getItem(WELCOME_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function markWelcomed(): void {
+  try {
+    localStorage.setItem(WELCOME_KEY, "1");
+  } catch {
+    // ignore
+  }
+}
+
 export { todayKey };

@@ -184,6 +184,7 @@ const css = `
   /* Footer links + legal page */
   .footer-links { display: block; margin-top: 10px; }
   .footer-links a { margin: 0 2px; }
+  .footer-kvk { display: block; margin-top: 8px; }
   .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
   .lang-btn { background: none; border: none; font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.14em; color: ${palette.border}; cursor: pointer; padding: 2px 0; transition: color 0.2s; }
   .lang-btn:hover { color: ${palette.textLight}; }
@@ -498,6 +499,7 @@ function AppShell() {
             <span aria-hidden="true"> · </span>
             <a href="mailto:hello@naomietnel.com">{t("footer.contact")}</a>
           </span>
+          <span className="footer-kvk">KvK 42083997</span>
         </footer>
       </div>
       {showWaitlist && <WaitlistModal onClose={() => setShowWaitlist(false)} />}

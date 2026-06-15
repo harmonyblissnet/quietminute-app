@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { palette } from "../theme";
 import { breathingPatterns, sounds, durations } from "./data";
-import type { BreathingPattern, Sound } from "./data";
+import type { BreathingPattern, Sound, BreathPhase } from "./data";
+import { useT } from "../i18n/LanguageContext";
 
 const BIG = 150;
 const SMALL = 74;
-const PHASE_LABEL: Record<string, string> = {
-  inhale: "breathe in",
-  hold: "hold",
-  exhale: "breathe out",
+const PHASE_KEY: Record<BreathPhase, string> = {
+  inhale: "breath.in",
+  hold: "breath.hold",
+  exhale: "breath.out",
 };
 
 function getAudioContext(): AudioContext | null {
@@ -23,6 +24,7 @@ function getAudioContext(): AudioContext | null {
 // synthesised tone on each in/out breath, and loops the chosen ambient sound
 // (when its MP3 is present). All audio is best-effort — a missing file or a
 // browser that blocks audio simply means silence, never a broken session.
+// (The per-phase guidance line is kept in English for now, like the prompts.)
 function Session({
   pattern,
   sound,
@@ -36,7 +38,8 @@ function Session({
   onComplete: () => void;
   onStop: () => void;
 }) {
-  const [label, setLabel] = useState(PHASE_LABEL[pattern.cycle[0].phase]);
+  const { t } = useT();
+  const [phase, setPhase] = useState<BreathPhase>(pattern.cycle[0].phase);
   const [guide, setGuide] = useState(pattern.cycle[0].guide);
   const [size, setSize] = useState(SMALL);
   const [transMs, setTransMs] = useState(1000);
@@ -63,14 +66,14 @@ function Session({
         const gain = ctx.createGain();
         osc.type = "sine";
         osc.frequency.value = kind === "in" ? 392 : 294;
-        const t = ctx.currentTime;
-        gain.gain.setValueAtTime(0.0001, t);
-        gain.gain.exponentialRampToValueAtTime(0.1, t + 0.4);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.7);
+        const t0 = ctx.currentTime;
+        gain.gain.setValueAtTime(0.0001, t0);
+        gain.gain.exponentialRampToValueAtTime(0.1, t0 + 0.4);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 1.7);
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.start(t);
-        osc.stop(t + 1.8);
+        osc.start(t0);
+        osc.stop(t0 + 1.8);
       } catch {
         // a tone is a nicety; never let it break the session
       }
@@ -78,7 +81,7 @@ function Session({
 
     function runPhase(index: number) {
       const s = pattern.cycle[index];
-      setLabel(PHASE_LABEL[s.phase]);
+      setPhase(s.phase);
       setGuide(s.guide);
       setTransMs(s.seconds * 1000);
       if (s.phase === "inhale") {
@@ -122,12 +125,12 @@ function Session({
               boxShadow: `0 0 ${Math.round(size / 4)}px ${palette.accentGlow}`,
             }}
           >
-            <span className="breath-phase">{label}</span>
+            <span className="breath-phase">{t(PHASE_KEY[phase])}</span>
           </div>
         </div>
       </div>
       <p className="breath-guide">{guide}</p>
-      <button className="btn-back" onClick={onStop}>end session</button>
+      <button className="btn-back" onClick={onStop}>{t("bs.end")}</button>
       {sound.file && <audio ref={ambientRef} src={sound.file} loop preload="none" />}
     </div>
   );
@@ -136,6 +139,7 @@ function Session({
 type Step = "pattern" | "sound" | "duration" | "session" | "done";
 
 export function BreathingSession({ onBack }: { onBack: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState<Step>("pattern");
   const [pattern, setPattern] = useState<BreathingPattern | null>(null);
   const [sound, setSound] = useState<Sound | null>(null);
@@ -157,8 +161,8 @@ export function BreathingSession({ onBack }: { onBack: () => void }) {
     return (
       <div className="practice">
         <span className="practice-mark">✦</span>
-        <h2 className="flow-title">You stayed.</h2>
-        <button className="btn-back" onClick={onBack}>← back to your practice</button>
+        <h2 className="flow-title">{t("bs.stayed")}</h2>
+        <button className="btn-back" onClick={onBack}>{t("bs.backPractice")}</button>
       </div>
     );
   }
@@ -172,12 +176,12 @@ export function BreathingSession({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="practice">
-      <button className="btn-back practice-back" onClick={goBack}>← back</button>
+      <button className="btn-back practice-back" onClick={goBack}>{t("common.back")}</button>
 
       {step === "pattern" && (
         <>
-          <p className="practice-eyebrow">Breathing session</p>
-          <p className="wi-body">Which rhythm feels right?</p>
+          <p className="practice-eyebrow">{t("bs.title")}</p>
+          <p className="wi-body">{t("bs.rhythm")}</p>
           <div className="dash-cards">
             {breathingPatterns.map((p) => (
               <button
@@ -191,7 +195,7 @@ export function BreathingSession({ onBack }: { onBack: () => void }) {
                 <span className="mode-icon">◇</span>
                 <div>
                   <p className="mode-label">{p.label}</p>
-                  <p className="mode-sub">{p.detail} · {p.mood}</p>
+                  <p className="mode-sub">{t(`bs.pattern.${p.id}.detail`)} · {t(`bs.pattern.${p.id}.mood`)}</p>
                 </div>
               </button>
             ))}
@@ -201,7 +205,7 @@ export function BreathingSession({ onBack }: { onBack: () => void }) {
 
       {step === "sound" && (
         <>
-          <p className="practice-eyebrow">Your sound</p>
+          <p className="practice-eyebrow">{t("bs.sound")}</p>
           <div className="dash-cards">
             {sounds.map((s) => (
               <button
@@ -214,7 +218,7 @@ export function BreathingSession({ onBack }: { onBack: () => void }) {
               >
                 <span className="mode-icon">♪</span>
                 <div>
-                  <p className="mode-label">{s.label}</p>
+                  <p className="mode-label">{t(`bs.sound.${s.id}`)}</p>
                 </div>
               </button>
             ))}
@@ -224,7 +228,7 @@ export function BreathingSession({ onBack }: { onBack: () => void }) {
 
       {step === "duration" && (
         <>
-          <p className="practice-eyebrow">How long?</p>
+          <p className="practice-eyebrow">{t("bs.duration")}</p>
           <div className="dash-cards">
             {durations.map((d) => (
               <button
@@ -237,7 +241,7 @@ export function BreathingSession({ onBack }: { onBack: () => void }) {
               >
                 <span className="mode-icon">◷</span>
                 <div>
-                  <p className="mode-label">{d} min</p>
+                  <p className="mode-label">{d} {t("bs.min")}</p>
                 </div>
               </button>
             ))}

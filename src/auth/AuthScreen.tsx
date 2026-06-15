@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { palette } from "../theme";
 import { useAuth } from "./AuthContext";
+import { useT } from "../i18n/LanguageContext";
 
 // Auth-specific styles. Shared chrome (.btn-primary, .flow-eyebrow, .flow-title,
 // the fadeIn keyframe) comes from the global stylesheet injected by App.
@@ -29,6 +30,7 @@ type Notice = { kind: "info" | "error"; text: string };
 
 export function AuthScreen() {
   const { signInWithMagicLink, signInWithPassword, signUpWithPassword } = useAuth();
+  const { t } = useT();
   const [tab, setTab] = useState<Tab>("magic");
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
@@ -54,13 +56,12 @@ export function AuthScreen() {
         setNotice(
           error
             ? { kind: "error", text: error }
-            : { kind: "info", text: "check your inbox — a sign-in link is on its way." },
+            : { kind: "info", text: t("auth.notice.magicSent") },
         );
       } else if (isSignUp) {
         const { error, needsConfirmation } = await signUpWithPassword(email.trim(), password);
         if (error) setNotice({ kind: "error", text: error });
-        else if (needsConfirmation)
-          setNotice({ kind: "info", text: "check your inbox to confirm your account." });
+        else if (needsConfirmation) setNotice({ kind: "info", text: t("auth.notice.confirm") });
         // Otherwise the session updates and this screen is replaced automatically.
       } else {
         const { error } = await signInWithPassword(email.trim(), password);
@@ -72,15 +73,19 @@ export function AuthScreen() {
     }
   }
 
-  const cta = isMagic ? "send me a link" : isSignUp ? "create account" : "sign in";
+  const cta = isMagic
+    ? t("auth.cta.magic")
+    : isSignUp
+      ? t("auth.cta.signup")
+      : t("auth.cta.signin");
 
   return (
     <div className="auth">
       <style>{authCss}</style>
 
       <div className="auth-head">
-        <p className="flow-eyebrow">The Quiet Minute · members</p>
-        <h2 className="flow-title">Come inside.</h2>
+        <p className="flow-eyebrow">{t("auth.eyebrow")}</p>
+        <h2 className="flow-title">{t("auth.title")}</h2>
       </div>
 
       <div className="auth-tabs">
@@ -89,14 +94,14 @@ export function AuthScreen() {
           className={`auth-tab ${isMagic ? "is-active" : ""}`}
           onClick={() => switchTab("magic")}
         >
-          magic link
+          {t("auth.tab.magic")}
         </button>
         <button
           type="button"
           className={`auth-tab ${!isMagic ? "is-active" : ""}`}
           onClick={() => switchTab("password")}
         >
-          password
+          {t("auth.tab.password")}
         </button>
       </div>
 
@@ -106,7 +111,7 @@ export function AuthScreen() {
           type="email"
           required
           autoComplete="email"
-          placeholder="your email"
+          placeholder={t("auth.email")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -117,27 +122,25 @@ export function AuthScreen() {
             required
             minLength={6}
             autoComplete={isSignUp ? "new-password" : "current-password"}
-            placeholder="your password"
+            placeholder={t("auth.password")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         )}
         <button className="btn-primary" type="submit" disabled={busy}>
-          {busy ? "one moment…" : cta}
+          {busy ? t("auth.busy") : cta}
         </button>
       </form>
 
       {notice && <p className={`auth-notice ${notice.kind}`}>{notice.text}</p>}
 
       {isMagic ? (
-        <p className="auth-foot">
-          no password needed — we'll email you a link that signs you in.
-        </p>
+        <p className="auth-foot">{t("auth.magicFoot")}</p>
       ) : (
         <p className="auth-switch">
-          {isSignUp ? "already have an account? " : "new here? "}
+          {isSignUp ? t("auth.haveAccount") : t("auth.newHere")}
           <button type="button" onClick={() => { setIsSignUp((v) => !v); setNotice(null); }}>
-            {isSignUp ? "sign in" : "create one"}
+            {isSignUp ? t("auth.signinLink") : t("auth.createLink")}
           </button>
         </p>
       )}

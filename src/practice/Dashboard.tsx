@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { todaysPrompt } from "./data";
 import { recordVisit, isUpsellDismissed, dismissUpsell } from "./practiceStorage";
+import { useT, T } from "../i18n/LanguageContext";
 
 type Screen = "breathing" | "release" | "calendar";
 
-const cards: { id: Screen; label: string; sub: string }[] = [
-  { id: "breathing", label: "Breathing session", sub: "Choose your pattern, sound & duration" },
-  { id: "release", label: "The Release", sub: "Mind Racing — deeper" },
-  { id: "calendar", label: "Your calendar", sub: "The days you came back" },
-];
+const cardIds: Screen[] = ["breathing", "release", "calendar"];
 
 export function Dashboard({
   onOpen,
@@ -17,6 +14,7 @@ export function Dashboard({
   onOpen: (screen: Screen) => void;
   onExit: () => void;
 }) {
+  const { t } = useT();
   const [showUpsell, setShowUpsell] = useState(false);
 
   // Mark today on the silent calendar, and decide whether to show the one-time
@@ -33,21 +31,22 @@ export function Dashboard({
 
   return (
     <div className="practice">
-      <button className="btn-back practice-back" onClick={onExit}>← back to the free practice</button>
+      <button className="btn-back practice-back" onClick={onExit}>{t("common.backFree")}</button>
 
       <span className="practice-mark">✦</span>
       <p className="practice-eyebrow">The Daily Practice</p>
+      {/* The daily prompt is core content — kept in English for now. */}
       <p className="dash-prompt">{todaysPrompt()}</p>
 
       <div className="practice-rule" />
 
       <div className="dash-cards">
-        {cards.map((c) => (
-          <button key={c.id} className="mode-card" onClick={() => onOpen(c.id)}>
+        {cardIds.map((id) => (
+          <button key={id} className="mode-card" onClick={() => onOpen(id)}>
             <span className="mode-icon">◇</span>
             <div>
-              <p className="mode-label">{c.label}</p>
-              <p className="mode-sub">{c.sub}</p>
+              <p className="mode-label">{t(`dash.${id}.label`)}</p>
+              <p className="mode-sub">{t(`dash.${id}.sub`)}</p>
             </div>
           </button>
         ))}
@@ -55,15 +54,12 @@ export function Dashboard({
 
       {showUpsell && (
         <div className="dash-upsell">
-          <p>
-            If you feel ready for more than moments —<br />
-            there's a place where we go deeper, together.
-          </p>
+          <p><T k="dash.upsell" /></p>
           <div className="dash-upsell-row">
             <a className="btn-deeper" href="https://naomietnel.com" target="_blank" rel="noreferrer">
-              learn more →
+              {t("dash.learnMore")}
             </a>
-            <button className="dash-upsell-close" onClick={closeUpsell}>dismiss</button>
+            <button className="dash-upsell-close" onClick={closeUpsell}>{t("dash.dismiss")}</button>
           </div>
         </div>
       )}

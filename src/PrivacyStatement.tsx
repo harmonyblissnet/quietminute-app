@@ -2,12 +2,13 @@
 // footer. English first, Dutch below (the app itself is English).
 //
 // NOTE for Naomi — please confirm/adjust before relying on this:
-//   • the controller name ("Naomi Etnel" — KvK number to be added)
+//   • the controller name ("Naomi Etnel", KvK 42083997)
 //   • the "last updated" date
 // It's an honest, GDPR-minded draft, not formal legal advice — a quick glance
 // from a lawyer is wise for full coverage.
 
 const CONTACT = "hello@naomietnel.com";
+const KVK = "42083997";
 const UPDATED_EN = "Last updated: 11 June 2026";
 const UPDATED_NL = "Laatst bijgewerkt: 11 juni 2026";
 
@@ -98,7 +99,7 @@ export function PrivacyStatement({ onBack }: { onBack: () => void }) {
 
       <h2>Contact</h2>
       <p>
-        Naomi Etnel — <a href={`mailto:${CONTACT}`}>{CONTACT}</a>
+        Naomi Etnel (KvK {KVK}) — <a href={`mailto:${CONTACT}`}>{CONTACT}</a>
       </p>
 
       <div className="legal-rule" />
@@ -189,7 +190,7 @@ export function PrivacyStatement({ onBack }: { onBack: () => void }) {
 
         <h2>Contact</h2>
         <p>
-          Naomi Etnel — <a href={`mailto:${CONTACT}`}>{CONTACT}</a>
+          Naomi Etnel (KvK {KVK}) — <a href={`mailto:${CONTACT}`}>{CONTACT}</a>
         </p>
       </div>
 

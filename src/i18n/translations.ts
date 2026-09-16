@@ -207,6 +207,13 @@ export const translations: Record<Lang, Dict> = {
     "checkin.insight.lowEnergy": "Your energy has been low lately — that's worth honouring.",
     "checkin.insight.moreEase": "There's been more ease in you lately.",
     "checkin.insight.cameBack": "You keep coming back. That's the practice.",
+    "checkin.history": "history",
+    "checkin.historyTitle": "Your check-ins",
+    "checkin.empty": "No check-ins yet.",
+    "checkin.clear": "clear all data",
+    "checkin.clearConfirm": "This erases every check-in on this device. It can't be undone.",
+    "checkin.clearYes": "yes, clear",
+    "checkin.clearCancel": "cancel",
   },
 
   nl: {
@@ -399,6 +406,13 @@ export const translations: Record<Lang, Dict> = {
     "checkin.insight.lowEnergy": "Je energie is de laatste tijd laag — dat mag er zijn.",
     "checkin.insight.moreEase": "Er is de laatste tijd meer rust in je.",
     "checkin.insight.cameBack": "Je blijft terugkomen. Dat is de oefening.",
+    "checkin.history": "geschiedenis",
+    "checkin.historyTitle": "Je check-ins",
+    "checkin.empty": "Nog geen check-ins.",
+    "checkin.clear": "alle gegevens wissen",
+    "checkin.clearConfirm": "Dit wist elke check-in op dit apparaat. Dit kan niet ongedaan worden gemaakt.",
+    "checkin.clearYes": "ja, wissen",
+    "checkin.clearCancel": "annuleren",
   },
 
   de: {
@@ -591,6 +605,13 @@ export const translations: Record<Lang, Dict> = {
     "checkin.insight.lowEnergy": "Deine Energie war zuletzt niedrig — das darf sein.",
     "checkin.insight.moreEase": "Zuletzt war mehr Ruhe in dir.",
     "checkin.insight.cameBack": "Du kommst immer wieder zurück. Das ist die Übung.",
+    "checkin.history": "Verlauf",
+    "checkin.historyTitle": "Deine Check-ins",
+    "checkin.empty": "Noch keine Check-ins.",
+    "checkin.clear": "alle Daten löschen",
+    "checkin.clearConfirm": "Das löscht jeden Check-in auf diesem Gerät. Es kann nicht rückgängig gemacht werden.",
+    "checkin.clearYes": "ja, löschen",
+    "checkin.clearCancel": "abbrechen",
   },
 
   fr: {
@@ -783,6 +804,13 @@ export const translations: Record<Lang, Dict> = {
     "checkin.insight.lowEnergy": "Ton énergie est basse ces derniers temps — ça mérite d'être honoré.",
     "checkin.insight.moreEase": "Il y a eu plus de légèreté en toi récemment.",
     "checkin.insight.cameBack": "Tu reviens, encore et encore. C'est ça, la pratique.",
+    "checkin.history": "historique",
+    "checkin.historyTitle": "Tes check-ins",
+    "checkin.empty": "Pas encore de check-in.",
+    "checkin.clear": "effacer toutes les données",
+    "checkin.clearConfirm": "Cela efface chaque check-in sur cet appareil. C'est irréversible.",
+    "checkin.clearYes": "oui, effacer",
+    "checkin.clearCancel": "annuler",
   },
 
   es: {
@@ -975,5 +1003,12 @@ export const translations: Record<Lang, Dict> = {
     "checkin.insight.lowEnergy": "Tu energía ha estado baja últimamente — merece reconocerse.",
     "checkin.insight.moreEase": "Últimamente hay más calma en ti.",
     "checkin.insight.cameBack": "Sigues volviendo. Eso es la práctica.",
+    "checkin.history": "historial",
+    "checkin.historyTitle": "Tus check-ins",
+    "checkin.empty": "Aún no hay check-ins.",
+    "checkin.clear": "borrar todos los datos",
+    "checkin.clearConfirm": "Esto borra cada check-in en este dispositivo. No se puede deshacer.",
+    "checkin.clearYes": "sí, borrar",
+    "checkin.clearCancel": "cancelar",
   },
 };

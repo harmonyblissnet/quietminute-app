@@ -5,7 +5,7 @@ import { getInsight } from "./insight";
 // The confirmation after a check-in (also shown when you've already checked in
 // today): a gentle rule-based insight + the last 7 days as witnessing dots
 // (never a streak — a missed day is not a failure).
-export function Confirmation({ onBack }: { onBack: () => void }) {
+export function Confirmation({ onBack, onHistory }: { onBack: () => void; onHistory: () => void }) {
   const { t } = useT();
   const insight = getInsight(t);
 
@@ -31,6 +31,7 @@ export function Confirmation({ onBack }: { onBack: () => void }) {
       </div>
       <p className="final-sub">{t("cal.title")}</p>
 
+      <button className="btn-link" onClick={onHistory}>{t("checkin.history")}</button>
       <button className="btn-back" onClick={onBack}>{t("common.back")}</button>
     </div>
   );

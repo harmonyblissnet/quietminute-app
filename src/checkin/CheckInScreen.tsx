@@ -9,9 +9,11 @@ const MAX_MOODS = 2;
 export function CheckInScreen({
   onSubmit,
   onBack,
+  onHistory,
 }: {
   onSubmit: (entry: CheckIn) => void;
   onBack: () => void;
+  onHistory: () => void;
 }) {
   const { t } = useT();
   const [moods, setMoods] = useState<string[]>([]);
@@ -96,6 +98,7 @@ export function CheckInScreen({
       <button className="btn-primary" disabled={!canSubmit} onClick={submit}>
         {t("checkin.submit")}
       </button>
+      <button className="btn-link" onClick={onHistory}>{t("checkin.history")}</button>
     </div>
   );
 }

@@ -205,6 +205,13 @@ const css = `
   .week-dots { display: flex; gap: 10px; justify-content: center; }
   .dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid ${palette.accentLight}; }
   .dot.is-on { background: radial-gradient(circle, ${palette.accentLight}, ${palette.accent}); border-color: ${palette.accent}; box-shadow: 0 0 6px ${palette.accentGlow}; }
+  .history-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .history-item { background: ${palette.bgCard}; border: 1px solid ${palette.border}; border-radius: 12px; padding: 12px 16px; text-align: left; }
+  .history-date { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: ${palette.accent}; margin-bottom: 4px; }
+  .history-moods { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: ${palette.textDark}; line-height: 1.4; }
+  .history-note { font-size: 13px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; margin-top: 4px; line-height: 1.5; }
+  .clear-confirm { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .clear-row { display: flex; gap: 12px; align-items: center; }
   .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
   .lang-btn { background: none; border: none; font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.14em; color: ${palette.border}; cursor: pointer; padding: 2px 0; transition: color 0.2s; }
   .lang-btn:hover { color: ${palette.textLight}; }

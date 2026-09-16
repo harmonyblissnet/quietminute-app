@@ -114,7 +114,7 @@ members copy.
 
 ## Privacy (do not break this)
 
-Two strictly separate worlds:
+Three strictly separate worlds:
 
 - **Flow content** — anything the user types in a *flow* (the exercises) is held
   only in React state and is **never** persisted, logged, or sent anywhere,
@@ -123,6 +123,11 @@ Two strictly separate worlds:
   calls for user-entered flow text.
 - **Account data** — Supabase stores only what auth needs (email, and later
   subscription status). That is the *only* thing that may leave the browser.
+- **Check-in data** — the daily check-in (`src/checkin/`) is deliberately saved,
+  but **only in localStorage on the device**: never sent anywhere, no account,
+  no network, cleared anytime. Its rule-based insights are computed locally. This
+  is a *separate, explicit* promise, distinct from the flows' "never saved" — and
+  the check-in UI says so.
 
 Never let these cross: flow text must never reach the network, an account, or
 the database.

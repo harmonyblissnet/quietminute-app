@@ -5,6 +5,7 @@ import { DailyPracticeRoot } from "./practice/DailyPracticeRoot";
 import { WaitlistModal } from "./practice/WaitlistModal";
 import { dailyPracticeLaunched } from "./practice/config";
 import { PrivacyStatement } from "./PrivacyStatement";
+import { CheckInRoot } from "./checkin/CheckInRoot";
 import { LanguageProvider, useT, T } from "./i18n/LanguageContext";
 import { LanguageSwitcher } from "./i18n/LanguageSwitcher";
 
@@ -185,6 +186,21 @@ const css = `
   .footer-links { display: block; margin-top: 10px; }
   .footer-links a { margin: 0 2px; }
   .footer-kvk { display: block; margin-top: 8px; }
+
+  /* Daily check-in */
+  .checkin { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; max-width: 380px; animation: fadeIn 0.5s ease; }
+  .checkin-entry { width: 100%; background: ${palette.bgCard}; border: 1px solid ${palette.border}; border-radius: 16px; padding: 16px 20px; cursor: pointer; display: flex; flex-direction: column; gap: 3px; text-align: center; transition: all 0.25s ease; }
+  .checkin-entry:hover { border-color: ${palette.accentLight}; box-shadow: 0 6px 24px ${palette.accentGlow}; transform: translateY(-1px); }
+  .checkin-entry-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: ${palette.accent}; }
+  .checkin-entry-sub { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; letter-spacing: 0.02em; }
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .chip { border: 1px solid ${palette.border}; background: #fff; border-radius: 40px; padding: 9px 16px; font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 300; color: ${palette.textMid}; cursor: pointer; transition: all 0.2s; }
+  .chip:hover { border-color: ${palette.accentLight}; }
+  .chip.is-on { background: linear-gradient(135deg, ${palette.accentSoft}, ${palette.accentLight}); border-color: ${palette.accentLight}; color: ${palette.textDark}; box-shadow: 0 2px 10px ${palette.accentGlow}; }
+  .energy-row { display: flex; gap: 8px; justify-content: center; }
+  .checkin-hint { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; margin-top: -10px; }
+  .checkin-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: ${palette.accent}; font-weight: 400; }
+  .checkin-privacy { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; text-align: center; line-height: 1.6; }
   .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
   .lang-btn { background: none; border: none; font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.14em; color: ${palette.border}; cursor: pointer; padding: 2px 0; transition: color 0.2s; }
   .lang-btn:hover { color: ${palette.textLight}; }
@@ -409,7 +425,7 @@ const modes = [
   { id: "just-breathe", icon: "◌" },
 ];
 
-function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
+function QuietMinuteTool({ onEnterPremium, onCheckIn }: { onEnterPremium: () => void; onCheckIn: () => void }) {
   const { configured } = useAuth();
   const { t } = useT();
   const [selected, setSelected] = useState<string | null>(null);
@@ -418,6 +434,10 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", maxWidth: 380 }}>
       {!selected && (
         <div className="home">
+          <button className="checkin-entry" onClick={onCheckIn}>
+            <span className="checkin-entry-title">{t("checkin.entry")}</span>
+            <span className="checkin-entry-sub">{t("checkin.entrySub")}</span>
+          </button>
           <div className="home-header">
             <p className="eyebrow">The Quiet Minute</p>
             <h2 className="home-title"><T k="home.title" /></h2>
@@ -455,7 +475,7 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
 
 function AppShell() {
   const { t } = useT();
-  const [view, setView] = useState<"home" | "premium">("home");
+  const [view, setView] = useState<"home" | "premium" | "checkin">("home");
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [hash, setHash] = useState(window.location.hash);
 
@@ -487,7 +507,9 @@ function AppShell() {
         {showPrivacy ? (
           <PrivacyStatement onBack={() => { window.location.hash = ""; }} />
         ) : view === "home" ? (
-          <QuietMinuteTool onEnterPremium={enterPremium} />
+          <QuietMinuteTool onEnterPremium={enterPremium} onCheckIn={() => setView("checkin")} />
+        ) : view === "checkin" ? (
+          <CheckInRoot onExit={() => setView("home")} />
         ) : (
           <DailyPracticeRoot onExit={() => setView("home")} />
         )}

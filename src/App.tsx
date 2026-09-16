@@ -201,6 +201,10 @@ const css = `
   .checkin-hint { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; margin-top: -10px; }
   .checkin-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: ${palette.accent}; font-weight: 400; }
   .checkin-privacy { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; text-align: center; line-height: 1.6; }
+  .checkin-insight { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: ${palette.textMid}; text-align: center; line-height: 1.5; max-width: 320px; }
+  .week-dots { display: flex; gap: 10px; justify-content: center; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid ${palette.accentLight}; }
+  .dot.is-on { background: radial-gradient(circle, ${palette.accentLight}, ${palette.accent}); border-color: ${palette.accent}; box-shadow: 0 0 6px ${palette.accentGlow}; }
   .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
   .lang-btn { background: none; border: none; font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.14em; color: ${palette.border}; cursor: pointer; padding: 2px 0; transition: color 0.2s; }
   .lang-btn:hover { color: ${palette.textLight}; }

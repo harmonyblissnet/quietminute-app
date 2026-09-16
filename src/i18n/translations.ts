@@ -201,6 +201,12 @@ export const translations: Record<Lang, Dict> = {
     "checkin.energy.full": "Full",
     "checkin.done.title": "You checked in.",
     "checkin.done.body": "That's a Return.\nSee you tomorrow.",
+    "checkin.insight.gathering": "Keep checking in — a gentle picture will form.",
+    "checkin.insight.frequentMood": "'{mood}' has come up a lot lately.",
+    "checkin.insight.heavyStretch": "The heavier days have outweighed the light ones lately. Be gentle with yourself.",
+    "checkin.insight.lowEnergy": "Your energy has been low lately — that's worth honouring.",
+    "checkin.insight.moreEase": "There's been more ease in you lately.",
+    "checkin.insight.cameBack": "You keep coming back. That's the practice.",
   },
 
   nl: {
@@ -387,6 +393,12 @@ export const translations: Record<Lang, Dict> = {
     "checkin.energy.full": "Vol",
     "checkin.done.title": "Je hebt ingecheckt.",
     "checkin.done.body": "Dat is een Return.\nTot morgen.",
+    "checkin.insight.gathering": "Blijf inchecken — er ontstaat vanzelf een zacht beeld.",
+    "checkin.insight.frequentMood": "'{mood}' kwam de laatste tijd vaak terug.",
+    "checkin.insight.heavyStretch": "De zwaardere dagen wogen de laatste tijd zwaarder dan de lichte. Wees zacht voor jezelf.",
+    "checkin.insight.lowEnergy": "Je energie is de laatste tijd laag — dat mag er zijn.",
+    "checkin.insight.moreEase": "Er is de laatste tijd meer rust in je.",
+    "checkin.insight.cameBack": "Je blijft terugkomen. Dat is de oefening.",
   },
 
   de: {
@@ -573,6 +585,12 @@ export const translations: Record<Lang, Dict> = {
     "checkin.energy.full": "Voll",
     "checkin.done.title": "Du hast eingecheckt.",
     "checkin.done.body": "Das ist ein Return.\nBis morgen.",
+    "checkin.insight.gathering": "Bleib beim Einchecken — nach und nach entsteht ein sanftes Bild.",
+    "checkin.insight.frequentMood": "'{mood}' kam in letzter Zeit oft vor.",
+    "checkin.insight.heavyStretch": "Die schwereren Tage überwogen zuletzt die leichten. Sei sanft mit dir.",
+    "checkin.insight.lowEnergy": "Deine Energie war zuletzt niedrig — das darf sein.",
+    "checkin.insight.moreEase": "Zuletzt war mehr Ruhe in dir.",
+    "checkin.insight.cameBack": "Du kommst immer wieder zurück. Das ist die Übung.",
   },
 
   fr: {
@@ -759,6 +777,12 @@ export const translations: Record<Lang, Dict> = {
     "checkin.energy.full": "Pleine",
     "checkin.done.title": "Tu as fait ton check-in.",
     "checkin.done.body": "C'est un Return.\nÀ demain.",
+    "checkin.insight.gathering": "Continue tes check-ins — une image douce se dessinera.",
+    "checkin.insight.frequentMood": "'{mood}' est revenu souvent ces derniers temps.",
+    "checkin.insight.heavyStretch": "Les jours plus lourds ont pesé plus que les légers récemment. Sois doux·ce avec toi.",
+    "checkin.insight.lowEnergy": "Ton énergie est basse ces derniers temps — ça mérite d'être honoré.",
+    "checkin.insight.moreEase": "Il y a eu plus de légèreté en toi récemment.",
+    "checkin.insight.cameBack": "Tu reviens, encore et encore. C'est ça, la pratique.",
   },
 
   es: {
@@ -945,5 +969,11 @@ export const translations: Record<Lang, Dict> = {
     "checkin.energy.full": "Llena",
     "checkin.done.title": "Has hecho tu check-in.",
     "checkin.done.body": "Eso es un Return.\nHasta mañana.",
+    "checkin.insight.gathering": "Sigue haciendo check-in — poco a poco se formará una imagen suave.",
+    "checkin.insight.frequentMood": "'{mood}' ha aparecido mucho últimamente.",
+    "checkin.insight.heavyStretch": "Los días más pesados han pesado más que los ligeros últimamente. Sé amable contigo.",
+    "checkin.insight.lowEnergy": "Tu energía ha estado baja últimamente — merece reconocerse.",
+    "checkin.insight.moreEase": "Últimamente hay más calma en ti.",
+    "checkin.insight.cameBack": "Sigues volviendo. Eso es la práctica.",
   },
 };

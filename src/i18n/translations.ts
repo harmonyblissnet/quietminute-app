@@ -214,6 +214,8 @@ export const translations: Record<Lang, Dict> = {
     "checkin.clearConfirm": "This erases every check-in on this device. It can't be undone.",
     "checkin.clearYes": "yes, clear",
     "checkin.clearCancel": "cancel",
+    "checkin.breathe": "breathe with it",
+    "checkin.breathPremium": "a breath shaped to how you feel is part of The Daily Practice",
   },
 
   nl: {
@@ -413,6 +415,8 @@ export const translations: Record<Lang, Dict> = {
     "checkin.clearConfirm": "Dit wist elke check-in op dit apparaat. Dit kan niet ongedaan worden gemaakt.",
     "checkin.clearYes": "ja, wissen",
     "checkin.clearCancel": "annuleren",
+    "checkin.breathe": "adem er even bij",
+    "checkin.breathPremium": "een adem afgestemd op hoe je je voelt hoort bij The Daily Practice",
   },
 
   de: {
@@ -612,6 +616,8 @@ export const translations: Record<Lang, Dict> = {
     "checkin.clearConfirm": "Das löscht jeden Check-in auf diesem Gerät. Es kann nicht rückgängig gemacht werden.",
     "checkin.clearYes": "ja, löschen",
     "checkin.clearCancel": "abbrechen",
+    "checkin.breathe": "atme kurz dazu",
+    "checkin.breathPremium": "ein Atem, abgestimmt auf dein Gefühl, gehört zu The Daily Practice",
   },
 
   fr: {
@@ -811,6 +817,8 @@ export const translations: Record<Lang, Dict> = {
     "checkin.clearConfirm": "Cela efface chaque check-in sur cet appareil. C'est irréversible.",
     "checkin.clearYes": "oui, effacer",
     "checkin.clearCancel": "annuler",
+    "checkin.breathe": "respire un instant",
+    "checkin.breathPremium": "une respiration adaptée à ton ressenti fait partie de The Daily Practice",
   },
 
   es: {
@@ -1010,5 +1018,7 @@ export const translations: Record<Lang, Dict> = {
     "checkin.clearConfirm": "Esto borra cada check-in en este dispositivo. No se puede deshacer.",
     "checkin.clearYes": "sí, borrar",
     "checkin.clearCancel": "cancelar",
+    "checkin.breathe": "respira un momento",
+    "checkin.breathPremium": "una respiración adaptada a cómo te sientes es parte de The Daily Practice",
   },
 };

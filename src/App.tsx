@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { palette } from "./theme";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { DailyPracticeRoot } from "./practice/DailyPracticeRoot";
 import { WaitlistModal } from "./practice/WaitlistModal";
 import { dailyPracticeLaunched } from "./practice/config";
 import { PrivacyStatement } from "./PrivacyStatement";
+import { CheckInRoot } from "./checkin/CheckInRoot";
+import { BreathingCircle } from "./components/BreathingCircle";
 import { LanguageProvider, useT, T } from "./i18n/LanguageContext";
 import { LanguageSwitcher } from "./i18n/LanguageSwitcher";
 
@@ -185,6 +187,32 @@ const css = `
   .footer-links { display: block; margin-top: 10px; }
   .footer-links a { margin: 0 2px; }
   .footer-kvk { display: block; margin-top: 8px; }
+
+  /* Daily check-in */
+  .checkin { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; max-width: 380px; animation: fadeIn 0.5s ease; }
+  .checkin-entry { width: 100%; background: ${palette.bgCard}; border: 1px solid ${palette.border}; border-radius: 16px; padding: 16px 20px; cursor: pointer; display: flex; flex-direction: column; gap: 3px; text-align: center; transition: all 0.25s ease; }
+  .checkin-entry:hover { border-color: ${palette.accentLight}; box-shadow: 0 6px 24px ${palette.accentGlow}; transform: translateY(-1px); }
+  .checkin-entry-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: ${palette.accent}; }
+  .checkin-entry-sub { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; letter-spacing: 0.02em; }
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .chip { border: 1px solid ${palette.border}; background: #fff; border-radius: 40px; padding: 9px 16px; font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 300; color: ${palette.textMid}; cursor: pointer; transition: all 0.2s; }
+  .chip:hover { border-color: ${palette.accentLight}; }
+  .chip.is-on { background: linear-gradient(135deg, ${palette.accentSoft}, ${palette.accentLight}); border-color: ${palette.accentLight}; color: ${palette.textDark}; box-shadow: 0 2px 10px ${palette.accentGlow}; }
+  .energy-row { display: flex; gap: 8px; justify-content: center; }
+  .checkin-hint { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; margin-top: -10px; }
+  .checkin-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: ${palette.accent}; font-weight: 400; }
+  .checkin-privacy { font-size: 11px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; text-align: center; line-height: 1.6; }
+  .checkin-insight { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: ${palette.textMid}; text-align: center; line-height: 1.5; max-width: 320px; }
+  .week-dots { display: flex; gap: 10px; justify-content: center; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid ${palette.accentLight}; }
+  .dot.is-on { background: radial-gradient(circle, ${palette.accentLight}, ${palette.accent}); border-color: ${palette.accent}; box-shadow: 0 0 6px ${palette.accentGlow}; }
+  .history-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .history-item { background: ${palette.bgCard}; border: 1px solid ${palette.border}; border-radius: 12px; padding: 12px 16px; text-align: left; }
+  .history-date { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: ${palette.accent}; margin-bottom: 4px; }
+  .history-moods { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: ${palette.textDark}; line-height: 1.4; }
+  .history-note { font-size: 13px; color: ${palette.textLight}; font-style: italic; font-family: 'Cormorant Garamond', serif; margin-top: 4px; line-height: 1.5; }
+  .clear-confirm { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .clear-row { display: flex; gap: 12px; align-items: center; }
   .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
   .lang-btn { background: none; border: none; font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.14em; color: ${palette.border}; cursor: pointer; padding: 2px 0; transition: color 0.2s; }
   .lang-btn:hover { color: ${palette.textLight}; }
@@ -203,52 +231,6 @@ const css = `
     .page { padding: 48px 20px 64px; }
   }
 `;
-
-function BreathingCircle({ onComplete }: { onComplete: () => void }) {
-  const { t } = useT();
-  const [phase, setPhase] = useState("inhale");
-  const [count, setCount] = useState(4);
-  const phaseRef = useRef("inhale");
-  const countRef = useRef(4);
-  const cycleRef = useRef(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      countRef.current -= 1;
-      if (countRef.current <= 0) {
-        let nextPhase;
-        if (phaseRef.current === "inhale") { nextPhase = "hold"; countRef.current = 4; }
-        else if (phaseRef.current === "hold") { nextPhase = "exhale"; countRef.current = 4; }
-        else {
-          nextPhase = "inhale"; countRef.current = 4;
-          cycleRef.current += 1;
-          if (cycleRef.current >= 5) { clearInterval(timer); setTimeout(onComplete, 700); return; }
-        }
-        phaseRef.current = nextPhase;
-        setPhase(nextPhase);
-      }
-      setCount(countRef.current);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [onComplete]);
-
-  const size = phase === "inhale" ? 134 : phase === "hold" ? 112 : 72;
-  const glow = phase === "inhale" ? `0 0 48px ${palette.accentGlow}` : phase === "hold" ? `0 0 28px ${palette.accentGlow}` : `0 0 8px ${palette.accentGlow}`;
-  const label = phase === "inhale" ? t("breath.in") : phase === "hold" ? t("breath.hold") : t("breath.out");
-
-  return (
-    <div className="breath-wrap">
-      <div className="breath-outer">
-        <div className="pulse-ring-2" style={{ width: size + 44, height: size + 44 }} />
-        <div className="pulse-ring-1" style={{ width: size + 22, height: size + 22 }} />
-        <div className="breath-circle" style={{ width: size, height: size, boxShadow: glow }}>
-          <span className="breath-count">{count}</span>
-          <span className="breath-phase">{label}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function FinalActions({ onHome }: { onHome: () => void }) {
   const { t } = useT();
@@ -409,7 +391,7 @@ const modes = [
   { id: "just-breathe", icon: "◌" },
 ];
 
-function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
+function QuietMinuteTool({ onEnterPremium, onCheckIn }: { onEnterPremium: () => void; onCheckIn: () => void }) {
   const { configured } = useAuth();
   const { t } = useT();
   const [selected, setSelected] = useState<string | null>(null);
@@ -418,6 +400,10 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", maxWidth: 380 }}>
       {!selected && (
         <div className="home">
+          <button className="checkin-entry" onClick={onCheckIn}>
+            <span className="checkin-entry-title">{t("checkin.entry")}</span>
+            <span className="checkin-entry-sub">{t("checkin.entrySub")}</span>
+          </button>
           <div className="home-header">
             <p className="eyebrow">The Quiet Minute</p>
             <h2 className="home-title"><T k="home.title" /></h2>
@@ -455,7 +441,7 @@ function QuietMinuteTool({ onEnterPremium }: { onEnterPremium: () => void }) {
 
 function AppShell() {
   const { t } = useT();
-  const [view, setView] = useState<"home" | "premium">("home");
+  const [view, setView] = useState<"home" | "premium" | "checkin">("home");
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [hash, setHash] = useState(window.location.hash);
 
@@ -487,7 +473,9 @@ function AppShell() {
         {showPrivacy ? (
           <PrivacyStatement onBack={() => { window.location.hash = ""; }} />
         ) : view === "home" ? (
-          <QuietMinuteTool onEnterPremium={enterPremium} />
+          <QuietMinuteTool onEnterPremium={enterPremium} onCheckIn={() => setView("checkin")} />
+        ) : view === "checkin" ? (
+          <CheckInRoot onExit={() => setView("home")} />
         ) : (
           <DailyPracticeRoot onExit={() => setView("home")} />
         )}

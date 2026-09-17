@@ -46,8 +46,9 @@ The free experience still lives almost entirely in `src/App.tsx`, top to bottom:
    `palette` tokens. Imports Google Fonts: **Cormorant Garamond** (serif,
    titles) and **Jost** (sans, body/UI).
 2. **Shared components** — `BreathingCircle({ onComplete })` (4-count
-   inhale → hold → exhale, 5 cycles, then `onComplete`) and
-   `FinalActions({ onHome })` (the closing footer on every flow).
+   inhale → hold → exhale, 5 cycles, then `onComplete`; now in
+   `src/components/BreathingCircle.tsx`, shared by the flows and the check-in)
+   and `FinalActions({ onHome })` (the closing footer on every flow).
 3. **Flow components** — `NoSpaceFlow`, `HeadFullFlow`, `EndOfDayFlow`,
    `JustBreatheFlow`. Each takes `{ onBack }` and is a small `step` state
    machine reusing `BreathingCircle` / `FinalActions`.
@@ -81,6 +82,12 @@ Other modules (added as the app grows beyond a single file):
   `practiceStorage.ts` keeps the local calendar marks (non-sensitive UX state).
 - **`supabase/entitlements.sql`** — the `entitlements` table + RLS to run once
   in Supabase. **`public/audio/`** — drop-in ambient MP3s (optional).
+- **`src/checkin/`** — the free **daily check-in** (a small Return): onboarding,
+  the check-in form (moods max 2 / free-text feeling / energy / note), a local
+  rule-based `insight.ts`, the 7 witnessing dots, history + clear data, and a
+  free breath. Stored only in localStorage (`checkinStorage.ts`) — the third
+  privacy world. Reachable from the home screen; also feeds the premium Silent
+  Calendar. Insight sentences are translated; the mood ids drive the rules.
 
 `src/main.tsx` mounts `<App />`; `src/index.css` is a minimal reset.
 
@@ -114,7 +121,7 @@ members copy.
 
 ## Privacy (do not break this)
 
-Two strictly separate worlds:
+Three strictly separate worlds:
 
 - **Flow content** — anything the user types in a *flow* (the exercises) is held
   only in React state and is **never** persisted, logged, or sent anywhere,
@@ -123,6 +130,11 @@ Two strictly separate worlds:
   calls for user-entered flow text.
 - **Account data** — Supabase stores only what auth needs (email, and later
   subscription status). That is the *only* thing that may leave the browser.
+- **Check-in data** — the daily check-in (`src/checkin/`) is deliberately saved,
+  but **only in localStorage on the device**: never sent anywhere, no account,
+  no network, cleared anytime. Its rule-based insights are computed locally. This
+  is a *separate, explicit* promise, distinct from the flows' "never saved" — and
+  the check-in UI says so.
 
 Never let these cross: flow text must never reach the network, an account, or
 the database.

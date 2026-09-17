@@ -1,0 +1,41 @@
+import { useState } from "react";
+import { Onboarding } from "./Onboarding";
+import { CheckInScreen } from "./CheckInScreen";
+import { Confirmation } from "./Confirmation";
+import { History } from "./History";
+import { isOnboarded, markOnboarded, saveCheckIn, todaysCheckIn } from "./checkinStorage";
+import type { CheckIn } from "./checkinStorage";
+
+type View = "form" | "done" | "history";
+
+// The free daily check-in: onboarding (once) → the check-in form → a gentle
+// confirmation with a rule-based insight and the 7 witnessing dots. If you've
+// already checked in today, it opens straight to that confirmation. History
+// (all past check-ins + clear data) is reachable from both.
+export function CheckInRoot({ onExit }: { onExit: () => void }) {
+  const [onboarded, setOnboarded] = useState(isOnboarded);
+  const [view, setView] = useState<View>(() => (todaysCheckIn() ? "done" : "form"));
+
+  if (!onboarded) {
+    return <Onboarding onBegin={() => { markOnboarded(); setOnboarded(true); }} />;
+  }
+
+  if (view === "history") {
+    return <History onBack={onExit} />;
+  }
+
+  if (view === "form") {
+    return (
+      <CheckInScreen
+        onBack={onExit}
+        onHistory={() => setView("history")}
+        onSubmit={(entry: CheckIn) => {
+          saveCheckIn(entry);
+          setView("done");
+        }}
+      />
+    );
+  }
+
+  return <Confirmation onBack={onExit} onHistory={() => setView("history")} />;
+}

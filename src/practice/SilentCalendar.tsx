@@ -1,4 +1,5 @@
 import { getVisitDates, todayKey } from "./practiceStorage";
+import { getCheckIns } from "../checkin/checkinStorage";
 import { useT } from "../i18n/LanguageContext";
 import type { Lang } from "../i18n/translations";
 
@@ -19,7 +20,8 @@ export function SilentCalendar({ onBack }: { onBack: () => void }) {
   const monthName = now.toLocaleString(locale, { month: "long" });
   const firstDow = new Date(year, month, 1).getDay(); // 0 = Sunday
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const marked = getVisitDates();
+  // "Days you came back" = any day with a dashboard visit or a check-in.
+  const marked = new Set([...getVisitDates(), ...getCheckIns().map((c) => c.date)]);
   const today = todayKey(now);
 
   // Localized one-letter weekday headers, starting Sunday (Jan 1 2023 = Sunday).
